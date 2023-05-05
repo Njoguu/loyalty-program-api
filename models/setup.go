@@ -10,30 +10,32 @@ import (
 	"fmt"
 	"log"
 	"strconv"
-	"database/sql"
-	_ "github.com/lib/pq"
+	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
+	_"github.com/jinzhu/gorm/dialects/postgres"
 )
 
-func ConnectDB() (*sql.DB, error){
+var DB *gorm.DB
+
+func ConnectDB(){
 
 	// Load .env file
-	err := godotenv.Load()
+	err := godotenv.Load(".env")
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
-	// Database connection credentials
-	host := os.Getenv("host")
-    portStr := os.Getenv("port")
-    user := os.Getenv("user")
-    password := os.Getenv("password")
-    dbname := os.Getenv("dbname")
+	// Get Database connection credentials
+	host := os.Getenv("PG_HOST")
+    portStr := os.Getenv("PG_PORT")
+    user := os.Getenv("PG_USER")
+    password := os.Getenv("PG_PASSWORD")
+    dbname := os.Getenv("PG_DB")
 
 	// convert port to integer
 	port, err := strconv.Atoi(portStr)
 	if err != nil {
-		return nil, err
+		return
 	}
 
 	// connection string
@@ -41,16 +43,15 @@ func ConnectDB() (*sql.DB, error){
         host, port, user, password, dbname)
 
 	// Connect to Database
-	db, err := sql.Open("postgres", connStr)
+	db, err := gorm.Open("postgres", connStr)
 	if err != nil{
-		panic(err)
+		fmt.Println("Cannot connect to database!")
+		log.Fatal("Connection error:", err)
+	}else{
+		fmt.Println("Database connection initiated!")
 	}
 
-	// Test connection
-	err = db.Ping()
-	if err != nil{
-		panic(err)
-	}
+	DB = db
 
-	return db, nil
+	DB.AutoMigrate(&User{})
 }
