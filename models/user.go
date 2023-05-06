@@ -39,6 +39,13 @@ type LoginInput struct{
     Password string `json:"password" binding:"required"`
 }
 
+type Points struct {
+    // gorm.Model
+    UserID   uint `gorm:"unique" json:"userid"`
+    Username string `gorm:"unique" json:"username"`
+    Points   int32 `json:"points"`
+}
+
 
 // MISC FUNCTIONS
 // Save a new user record to the database
@@ -115,4 +122,30 @@ func GetUser(uid uint) (User, error){
 // Hide Password in returned data
 func (user *User)PrepareGive(){
     user.Password = ""
+}
+
+// On Account creation, user is allocated 500 points
+func AllocatePoints(uid uint, username string) (User, Points, error){
+
+    points := Points{}
+    user := User{}
+
+    points.UserID = uid
+    points.Username = username
+    points.Points = 500
+
+    if err := DB.Create(&points).Error; err != nil {
+        return user, points, err
+    }
+
+    return user, points, nil
+}
+
+func GetPointsByID(uid uint) (Points, error){
+    var userPointsData Points
+    if err := DB.First(&userPointsData).Error; err != nil{
+        return userPointsData, errors.New("could not find user points data")
+    }
+
+    return userPointsData, nil
 }

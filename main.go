@@ -34,6 +34,7 @@ func main(){
 	// Protected routes
 	protected.Use(middlewares.JwtAuthMiddleware())
 	protected.GET("/me", controllers.GetCurrentUser)
+	protected.GET("/me/points", controllers.GetPointsData)
 
 	r.Run() // listen and serve on 0.0.0.0:8080	
 }

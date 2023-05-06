@@ -39,6 +39,9 @@ func CreateAccount(c *gin.Context){
 
 	_,err := user.SaveUser()
 
+	// Allocate free starter points on account creation
+	models.AllocatePoints(user.ID, user.Username)
+
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
 			"error" : err.Error(),
@@ -106,5 +109,32 @@ func GetCurrentUser(c *gin.Context){
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"message": "Success!",
 		"data": user,
+	})
+}
+
+// User to view their points balance
+func GetPointsData(c *gin.Context){
+
+	uid, err := token.ExtractTokenID(c)
+
+	if err != nil{
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	userData,err := models.GetPointsByID(uid)
+
+	if err != nil{
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, gin.H{
+		"message": "Success!",
+		"data": userData,
 	})
 }

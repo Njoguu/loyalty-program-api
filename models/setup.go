@@ -53,5 +53,5 @@ func ConnectDB(){
 
 	DB = db
 
-	DB.AutoMigrate(&User{})
+	DB.AutoMigrate(&User{}, &Points{})
 }
