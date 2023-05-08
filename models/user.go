@@ -2,7 +2,8 @@ package models
 
 import (
     "html"
-	"errors"
+	"time"
+    "errors"
 	"strings"
 	"api/utils/token"
 	"github.com/jinzhu/gorm"
@@ -22,6 +23,7 @@ type User struct {
     Password string `json:"password"`
     City string `json:"city"`
     PhoneNumber string `json:"phone_number"`
+    IsEmailVerified bool `json:"is_email_verified" gorm:"not null; default:false"`
 }	
 
 type CreateUserInput struct {
@@ -34,6 +36,16 @@ type CreateUserInput struct {
     City string `json:"city" binding:"required"`
     PhoneNumber string `json:"phone_number" binding:"required"`    
 }
+
+type VerifyEmails struct {
+    gorm.Model
+    Username     string         `gorm:"unique" json:"username"`
+    EmailAddress string         `json:"email"`
+    SecretCode   string         `json:"secret_code"`
+    ExpiredAt    time.Time `json:"expired_at" gorm:"default: (now() + interval '15 minutes')"`
+    User         User      `gorm:"foreignKey:Username"`
+}
+
 type LoginInput struct{
     Username string `json:"username" binding:"required"`
     Password string `json:"password" binding:"required"`
