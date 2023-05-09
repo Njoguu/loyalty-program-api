@@ -6,15 +6,18 @@ package controllers
 
 import (
 	"os"
+	"log"
+	"time"
 	"strings"
+	"strconv"
 	"net/http"
-	"api/utils/mail"
-	"api/utils/token"
 	models "api/models"
+	mail "api/utils/mail"
+	token "api/utils/token"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/thanhpk/randstr"
 )
-
 
 // create a new user
 func CreateAccount(c *gin.Context){
@@ -29,6 +32,13 @@ func CreateAccount(c *gin.Context){
 		return
 	}
 
+	// Hash Password
+	hashedPassword, err := models.HashPassword(input.Password)
+	if err != nil {
+		c.JSON(http.StatusBadGateway, gin.H{"status": "error", "message": err.Error()})
+		return
+	}
+
 	// // Create User
 	user := models.User{}
 	
@@ -37,13 +47,13 @@ func CreateAccount(c *gin.Context){
 	user.LastName = input.LastName
 	user.Gender = input.Gender
 	user.EmailAddress = input.EmailAddress
-	user.Password = input.Password
+	user.Password = hashedPassword
 	user.City = input.City
 	user.PhoneNumber = input.PhoneNumber
 
-	_,err := user.SaveUser()
+	_,errr := user.SaveUser()
 
-	if err != nil && strings.Contains(err.Error(), "duplicate key value violates unique") {
+	if errr != nil && strings.Contains(err.Error(), "duplicate key value violates unique") {
 		c.IndentedJSON(http.StatusConflict, gin.H{"status": "fail", "message": "User with that credential already exists"})
 		return
 	} 
@@ -51,7 +61,7 @@ func CreateAccount(c *gin.Context){
 	// Generate Verification Code
 	code := randstr.String(20)
 
-	verification_code := utils.Encode(code)
+	verification_code := mail.Encode(code)
 
 	// Update User verification data in Database
 	verifyEmails := models.VerifyEmails{}
@@ -67,13 +77,13 @@ func CreateAccount(c *gin.Context){
 	}
 
 	// ? Send Email
-	emailData := utils.EmailData{
+	emailData := mail.EmailData{
 		URL:       os.Getenv("CLIENT_ORIGIN") + "/api/auth/verify-email/" + code,
 		FirstName: firstName,
 		Subject:   "Your account verification code",
 	}
 
-	utils.SendEmail(&user, &emailData)
+	mail.SendEmail(&user, &emailData)
 
 	message := "We sent an email with a verification code to " + user.EmailAddress
 
@@ -87,7 +97,7 @@ func CreateAccount(c *gin.Context){
 func  VerifyEmail(c *gin.Context) {
 
 	code := c.Params.ByName("secret_code")
-	verification_code := utils.Encode(code)
+	verification_code := mail.Encode(code)
 
 	var updatedUser models.VerifyEmails
 	var user models.User
@@ -124,87 +134,103 @@ func  VerifyEmail(c *gin.Context) {
 }
 
 // login user
-func Login(c *gin.Context){
+func Login(c *gin.Context) {
 
-	// Validate input
-	var input models.LoginInput
-	if err := c.ShouldBindJSON(&input); err != nil{
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
+	// Validate Input
+	var input *models.LoginInput
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "fail",
+			"message": err.Error(),
+		})
+		return
+	}
+	
+	// Get User data of user logging in
+	var user models.User
+	result := models.DB.First(&user, "email_address = ?", strings.ToLower(input.EmailAddress))
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "fail",
+			"message": "Invalid email or Password",
 		})
 		return
 	}
 
-	// Login User
-	user := models.User{}
-	user.Username = input.Username
-	user.Password = input.Password
+	// Check if User is verified
+	if !user.IsEmailVerified {
+		c.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "Please verify your email"})
+		return
+	}
 
-	token, err := models.LoginCheck(user.Username, user.Password)
+	// Verify password given
+	if err := models.VerifyPassword(user.Password, input.Password); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Invalid email or Password"})
+		return
+	}
 
+	// Load .env file
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	// Generate Token
+	tokenExpiresInStr := os.Getenv("TOKEN_EXPIRES_IN")
+	TOKEN_MAXAGEStr := os.Getenv("TOKEN_MAXAGE")
+
+	TOKEN_MAXAGE, err := strconv.Atoi(TOKEN_MAXAGEStr)
 	if err != nil{
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"error": "Username or Password is incorrect",
+		return
+	}
+
+	TOKEN_EXPIRES_IN, err := time.ParseDuration(tokenExpiresInStr)
+	if err != nil {
+		log.Fatalf("invalid value for TOKEN_EXPIRES_IN: %s", tokenExpiresInStr)
+	}
+	
+	// Generate Token
+	token, err := token.GenerateToken(TOKEN_EXPIRES_IN, user.ID, os.Getenv("TOKEN_SECRET"))
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"status": "fail",
+			"message": err.Error(),
 		})
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, gin.H{
-		"message": "Login Success",
+	c.SetCookie("token", token, TOKEN_MAXAGE*60, "/", "localhost", false, true)
+
+	c.JSON(http.StatusOK, gin.H{
+		"status": "success",
 		"token": token,
 	})
 }
 
-// get current user
-func GetCurrentUser(c *gin.Context){
-
-	uid, err := token.ExtractTokenID(c)
-
-	if err != nil{
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	user,err := models.GetUser(uid)
-
-	if err != nil{
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	c.IndentedJSON(http.StatusOK, gin.H{
-		"message": "Success!",
-		"data": user,
+// logout user
+func Logout(c *gin.Context) {
+	c.SetCookie("token", "", -1, "/", "localhost", false, true)
+	c.JSON(http.StatusOK, gin.H{
+		"status": "success",
 	})
 }
 
-// User to view their points balance
-func GetPointsData(c *gin.Context){
+func GetCurrentUser(c *gin.Context) {
+	currentUser := c.MustGet("currentUser").(models.User)
 
-	uid, err := token.ExtractTokenID(c)
-
-	if err != nil{
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-
-	userData,err := models.GetPointsByID(uid)
-
-	if err != nil{
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
-		return
+	userResponse := &models.UserResponse{
+		Username: currentUser.Username,
+		FirstName: currentUser.FirstName,
+		LastName: currentUser.LastName,
+		EmailAddress: currentUser.EmailAddress,
+		IsEmailVerified: currentUser.IsEmailVerified,		
 	}
 
 	c.IndentedJSON(http.StatusOK, gin.H{
-		"message": "Success!",
-		"data": userData,
+		"status": "success",
+		"data": gin.H{
+			"user": userResponse,
+		},
 	})
 }

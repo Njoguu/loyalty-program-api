@@ -29,14 +29,14 @@ func main(){
 
 	// Routes
 	// users
-	protected.Use(middlewares.JwtAuthMiddleware())
+	protected.Use(middleware.DeserializeUser())
 	protected.GET("/me", controllers.GetCurrentUser)
-	protected.GET("/me/points", controllers.GetPointsData)
 
 	// Auth
 	public.POST("/register", controllers.CreateAccount)
 	public.GET("/verify-email/:secret_code", controllers.VerifyEmail)
 	public.POST("/login", controllers.Login)
+	public.GET("/logout", controllers.Logout)
 
 	r.Run() // listen and serve on 0.0.0.0:8080	
 }

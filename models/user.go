@@ -1,11 +1,13 @@
 package models
 
 import (
-    "html"
+	"errors"
+	"fmt"
+	// "html"
+	// "strings"
 	"time"
-    "errors"
-	"strings"
-	"api/utils/token"
+
+	// token "api/utils/token"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -46,9 +48,9 @@ type VerifyEmails struct {
     User         User      `gorm:"foreignKey:Username"`
 }
 
-type LoginInput struct{
-    Username string `json:"username" binding:"required"`
-    Password string `json:"password" binding:"required"`
+type LoginInput struct {
+	EmailAddress    string `json:"email"  binding:"required"`
+	Password string `json:"password"  binding:"required"`
 }
 
 type Points struct {
@@ -56,6 +58,15 @@ type Points struct {
     UserID   uint `gorm:"unique" json:"userid"`
     Username string `gorm:"unique" json:"username"`
     Points   int32 `json:"points"`
+}
+
+type UserResponse struct {
+	// ID        uuid.UUID `json:"id,omitempty"`
+	Username      string    `json:"name,omitempty"`
+    FirstName   string  `json:"first_name,omitempty"`
+    LastName    string  `json:"last_name,omitempty"`
+	EmailAddress    string    `json:"email,omitempty"`
+    IsEmailVerified bool    `json:"is_email_verified,omitempty"`
 }
 
 
@@ -70,52 +81,19 @@ func (user *User) SaveUser() (*User, error){
 	return user, nil
 }
 
-// Hash password input
-func (user *User) BeforeSave() error{
-
-	// Hash Given Password
-    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
-    if err != nil{
-        return err
-    }
-
-    user.Password = string(hashedPassword)
-
-    // remove spaces in username
-    user.Username = html.EscapeString(strings.TrimSpace(user.Username))
-
-    return nil
-}
-
 // Verify password hash and password given are identical
-func VerifyPassword(password, hashedPassword string) error{
-	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+func VerifyPassword(hashedPassword string, candidatePassword string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(candidatePassword))
 }
 
-// Verify Login Details
-func LoginCheck(username string, password string) (string, error){
-	
-	user := User{}
+// Hash Password function
+func HashPassword(password string) (string, error) {
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
-    var err error = DB.Model(User{}).Where("username = ?", username).Take(&user).Error
-
-	if err != nil{
-		return "", err
+	if err != nil {
+		return "", fmt.Errorf("could not hash password %w", err)
 	}
-
-	err = VerifyPassword(password, user.Password)
-
-	if err != nil && err == bcrypt.ErrMismatchedHashAndPassword{
-		return "", err
-	}
-
-	token, err := token.GenerateToken(user.ID)
-
-	if err != nil{
-		return "", err
-	}
-
-	return token, nil
+	return string(hashedPassword), nil
 }
 
 // Get Data of logged in user/ user providing token
