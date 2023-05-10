@@ -1,0 +1,122 @@
+## Data Structures
+
+### SigninRequest
++ email: user@example.com (required)
++ password: your-password (required)
++ errorRedirection: https://alan-njogu.herokuapp.com
+
+### CreateAccountRequest
++ username: YourUsername23 (required)
++ firstname: your-firstname (required)
++ lastname: your-lastname (required)
++ gender: your-gender (required)
++ email: user@example.com (required)
++ password : your-password (required)
++ city: your-city (required)
++ phone_number: your-phone-number (required)
+
+# Group Membership Service
+LoyaltyPoints Membership service api
+
+
+## Create Account [/api/auth/register]
+Create User account and send activation email
+
+### Account creation [POST]
++ Request with Body (application/json)
+
+    + Attributes(CreateAccountRequest)
+
++ Response 200 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + message: "We sent an email with a verification code to user@example.com" (required)
+        
++ Response 400
+
+    + Attributes
+        + status: fail (required)
+        + message: error (required)
+
++ Response 409
+
+    + Attributes
+        + status: fail (required)
+        + message : "User with that credential already exists" (required)
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: "Things have gone really bad!"
+
++ Response 502
+
+    + Attributes
+        + status: error (required)
+        + message: "Error!"
+
+## VerifyEmail [/api/auth/verify-email/:{secret_code}]
+Verify email of correspondent account and grant login access
+
+### User email verification [GET]
++ Parameters
+    + secret_code: 26dlFidiTVJHFH7Y (required)
+
++ Response 200 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + message: "Email verified successfully" (required)
+        
++ Response 400
+
+    + Attributes
+        + status: fail (required)
+        + message: "Invalid verification code or user doesn't exist" (required)
+
++ Response 409
+
+    + Attributes
+        + status: fail (required)
+        + message : "User already verified" (required)
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: "Things have gone really bad!"
+
+
+## Signin [/api/auth/login]
+Validate logging in of user
+
+### User login [POST]
++ Request with Body (application/json)
+
+    + Attributes(SigninRequest)
+
++ Response 200 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + token: dfghjkloiuytredfghjiuytredfcvbjkiouytr (required)
+        
++ Response 400
+
+    + Attributes
+        + status: fail (required)
+        + message: "Invalid email or Password" (required)
+
++ Response 403
+
+    + Attributes
+        + status: fail (required)
+        + message : "Please verify your email" (required)
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: "Things have gone really bad!"
