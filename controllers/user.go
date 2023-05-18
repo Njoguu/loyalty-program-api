@@ -27,6 +27,7 @@ func CreateAccount(c *gin.Context){
 
 	if err := c.ShouldBindJSON(&input); err != nil{
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status": "fail",
 			"error": err.Error(),
 		})
 		return
@@ -35,7 +36,9 @@ func CreateAccount(c *gin.Context){
 	// Hash Password
 	hashedPassword, err := models.HashPassword(input.Password)
 	if err != nil {
-		c.JSON(http.StatusBadGateway, gin.H{"status": "error", "message": err.Error()})
+		c.JSON(http.StatusBadGateway, gin.H{
+			"status": "error",
+			"message": err.Error()})
 		return
 	}
 
@@ -54,7 +57,10 @@ func CreateAccount(c *gin.Context){
 	_,errr := user.SaveUser()
 
 	if errr != nil && strings.Contains(err.Error(), "duplicate key value violates unique") {
-		c.IndentedJSON(http.StatusConflict, gin.H{"status": "fail", "message": "User with that credential already exists"})
+		c.IndentedJSON(http.StatusConflict, gin.H{
+			"status": "fail", 
+			"message": "User with that credential already exists",
+		})
 		return
 	} 
 
@@ -107,17 +113,26 @@ func  VerifyEmail(c *gin.Context) {
 	res := models.DB.First(&user, "username = ?", updatedUser.Username)
 
 	if res.Error != nil{
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Invalid verification code or user doesn't exists"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status": "fail", "message": 
+			"Invalid verification code or user doesn't exist",
+		})
 		return
 	}
 
 	if result.Error != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Invalid verification code or user doesn't exists"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status": "fail", 
+			"message": "Invalid verification code or user doesn't exist",
+		})
 		return
 	}
 
 	if user.IsEmailVerified {
-		c.IndentedJSON(http.StatusConflict, gin.H{"status": "fail", "message": "User already verified"})
+		c.IndentedJSON(http.StatusConflict, gin.H{
+			"status": "fail",
+			"message": "User already verified",
+		})
 		return
 	}
 
@@ -130,7 +145,10 @@ func  VerifyEmail(c *gin.Context) {
 	// Allocate free starter points on account creation
 	models.AllocatePoints(updatedUser.ID, updatedUser.Username)
 
-	c.IndentedJSON(http.StatusOK, gin.H{"status": "success", "message": "Email verified successfully"})
+	c.IndentedJSON(http.StatusOK, gin.H{
+		"status": "success",
+		"message": "Email verified successfully",
+	})
 }
 
 // login user
