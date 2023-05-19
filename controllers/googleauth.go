@@ -11,17 +11,47 @@ import (
 	"api/utils"
 	models "api/models"
 	token "api/utils/token"
-	"github.com/joho/godotenv"
+	"golang.org/x/oauth2"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	"golang.org/x/oauth2/google"
 )
 
+func GoogleOAuth(c *gin.Context){
+	
+	// Load .env file
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
-func GoogleOAuth(c *gin.Context) {
+	redirectURL := os.Getenv("GOOGLE_OAUTH_REDIRECT_URL")
+	clientID := os.Getenv("GOOGLE_OAUTH_CLIENT_ID")
+	clientSecret := os.Getenv("GOOGLE_OAUTH_CLIENT_SECRET")
+	scopes := []string{"https://www.googleapis.com/auth/userinfo.email"}
+	endpoint := google.Endpoint
+
+	State,err := utils.GenerateRandomString(16)
+	if err != nil{
+		fmt.Println(err.Error())
+	}
+
+	googleAuthConfig := &oauth2.Config{
+		RedirectURL: redirectURL,
+		ClientID: clientID,
+		ClientSecret: clientSecret,
+		Scopes: scopes,
+		Endpoint: endpoint,
+	}
+
+	url := googleAuthConfig.AuthCodeURL(State)
+	c.Redirect(http.StatusTemporaryRedirect, url)
+	
 	code := c.Query("code")
 	var pathUrl string = "/"
 
-	if c.Query("state") != "" {
-		pathUrl = c.Query("state")
+	if c.Request.FormValue("state") !=  State{
+		c.Redirect(http.StatusTemporaryRedirect, pathUrl)
 	}
 
 	if code == "" {
