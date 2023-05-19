@@ -10,13 +10,13 @@ import (
 )
 
 
-var server *gin.Engine
+var Server *gin.Engine
 
 func init(){
 	// Initialzie DB Connection
 	models.ConnectDB() 
 	
-	server = gin.Default() //router
+	Server = gin.Default() //router
 }	
 
 func main(){
@@ -24,14 +24,14 @@ func main(){
 	corsConfig.AllowOrigins = []string{"http://localhost:3000"}
 	corsConfig.AllowCredentials = true
 
-	server.Use(cors.New(corsConfig))
+	Server.Use(cors.New(corsConfig))
 
 	// Group endpoints
-	public := server.Group("/api/auth")
-	protected := server.Group("/api/users")
+	public := Server.Group("/api/auth")
+	protected := Server.Group("/api/users")
 
 	// Test API works
-	server.GET("/ping", func(c *gin.Context){
+	Server.GET("/ping", func(c *gin.Context){
 		c.JSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
@@ -49,5 +49,5 @@ func main(){
 	public.GET("/logout", controllers.Logout)
 	public.GET("/sessions/oauth/google", controllers.GoogleOAuth)
 
-	server.Run(":" + "8000") // listen and serve on 0.0.0.0:8000	
+	Server.Run(":" + "8000") // listen and serve on 0.0.0.0:8000	
 }
