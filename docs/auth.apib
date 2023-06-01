@@ -15,6 +15,15 @@
 + city: your-city (required)
 + phone_number: your-phone-number (required)
 
+### UserDataResponse
++ user (object, required) - The user data
+    + username: YourUsername23 (required) - The user's username
+    + firstname: your-firstname (required) - The user's first name
+    + lastname: your-lastname (required) - The user's last name
+    + email: user@example.com (required) - The user's email
+    + points: 250 (required) - The user's total points
+    + is_email_verified: true (required) - The user's email verification status
+
 # Group Membership Service
 LoyaltyPoints Membership service api
 
@@ -120,3 +129,31 @@ Validate logging in of user
     + Attributes
         + status: error (required)
         + message: "Things have gone really bad!"
+
+## Logout [/api/auth/logout]
+Send an expired cookie to the user’s browser or client. Sending the expired cookie will invalidate the user's 'session'.
+
+### User logout [GET]
+
++ Response 200
+
+    + Attributes
+        + status: success (required)
+        + message: "You have been logged out!"
+
+## Get User Data [/api/users/me]
+Retrieve the currently logged-in user’s information.
+
+### Get user data [GET]
+
++ Response 200
+
+    + Attributes
+        + status: success (required)
+        + data (UserDataResponse, required)
+
++ Response 401
+
+    + Attributes
+        + status: fail (required)
+        + message: "You are not logged in"
