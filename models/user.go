@@ -1,13 +1,9 @@
 package models
 
 import (
-	"errors"
-	"fmt"
-	// "html"
-	// "strings"
+    "fmt"
 	"time"
-
-	// token "api/utils/token"
+	"errors"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -15,8 +11,6 @@ import (
 // User data structure
 type User struct {
     gorm.Model
-
-    // UID uint `json:"id" gorm:"primary_key;unique"`
 	Username string `gorm:"unique" json:"username"`
     FirstName string `json:"firstname"`
     LastName string `json:"lastname"`
@@ -25,9 +19,11 @@ type User struct {
     Password string `json:"password"`
     City string `json:"city"`
     PhoneNumber string `json:"phone_number"`
+    Points int `json:"points"`
     IsEmailVerified bool `json:"is_email_verified" gorm:"not null; default:false"`
 }	
 
+// User Creation Request Data
 type CreateUserInput struct {
     Username string `json:"username" binding:"required"`
     FirstName string `json:"firstname" binding:"required"`
@@ -48,24 +44,19 @@ type VerifyEmails struct {
     User         User      `gorm:"foreignKey:Username"`
 }
 
+// User Login Request data
 type LoginInput struct {
 	EmailAddress    string `json:"email"  binding:"required"`
 	Password string `json:"password"  binding:"required"`
 }
 
-type Points struct {
-    // gorm.Model
-    UserID   uint `gorm:"unique" json:"userid"`
-    Username string `gorm:"unique" json:"username"`
-    Points   int32 `json:"points"`
-}
-
+// User Data Response
 type UserResponse struct {
-	// ID        uuid.UUID `json:"id,omitempty"`
-	Username      string    `json:"name,omitempty"`
+	Username      string    `json:"username,omitempty"`
     FirstName   string  `json:"first_name,omitempty"`
     LastName    string  `json:"last_name,omitempty"`
 	EmailAddress    string    `json:"email,omitempty"`
+    Points  int  `json:"points,omitempty"`
     IsEmailVerified bool    `json:"is_email_verified,omitempty"`
 }
 
@@ -112,30 +103,4 @@ func GetUser(uid uint) (User, error){
 // Hide Password in returned data
 func (user *User)PrepareGive(){
     user.Password = ""
-}
-
-// On Account creation, user is allocated 500 points
-func AllocatePoints(uid uint, username string) (User, Points, error){
-
-    points := Points{}
-    user := User{}
-
-    points.UserID = uid
-    points.Username = username
-    points.Points = 500
-
-    if err := DB.Create(&points).Error; err != nil {
-        return user, points, err
-    }
-
-    return user, points, nil
-}
-
-func GetPointsByID(uid uint) (Points, error){
-    var userPointsData Points
-    if err := DB.First(&userPointsData).Error; err != nil{
-        return userPointsData, errors.New("could not find user points data")
-    }
-
-    return userPointsData, nil
 }
