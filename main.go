@@ -41,6 +41,7 @@ func main(){
 	// users
 	protected.Use(middleware.DeserializeUser())
 	protected.GET("/me", controllers.GetCurrentUser)
+	protected.POST("/me/redeem", controllers.RedeemPoints)
 
 	// Auth
 	public.POST("/register", controllers.CreateAccount)
