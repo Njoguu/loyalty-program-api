@@ -19,7 +19,7 @@ type User struct {
     Password string `json:"password"`
     City string `json:"city"`
     PhoneNumber string `json:"phone_number"`
-    Points int `json:"points"`
+    RedeemablePoints int `json:"redeemable_points"`
     IsEmailVerified bool `json:"is_email_verified" gorm:"not null; default:false"`
 }	
 
@@ -56,7 +56,7 @@ type UserResponse struct {
     FirstName   string  `json:"first_name,omitempty"`
     LastName    string  `json:"last_name,omitempty"`
 	EmailAddress    string    `json:"email,omitempty"`
-    Points  int  `json:"points,omitempty"`
+    RedeemablePoints  int  `json:"redeemable_points,omitempty"`
     IsEmailVerified bool    `json:"is_email_verified,omitempty"`
 }
 

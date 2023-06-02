@@ -47,7 +47,7 @@ func RedeemPoints(c *gin.Context){
     // TODO: Deduct request.Quantity from selectedProduct.Count
 
     // Check if the user has enough points for redemption
-    if  user.Points < totalPoints {
+    if  user.RedeemablePoints < totalPoints {
         c.IndentedJSON(http.StatusBadRequest, gin.H{
             "status": "fail",
             "message": "Insufficient points",
@@ -56,7 +56,7 @@ func RedeemPoints(c *gin.Context){
     }
 
     // Deduct points from the user's account
-    user.Points = user.Points - totalPoints
+    user.RedeemablePoints = user.RedeemablePoints - totalPoints
 
     if err := models.DB.Save(&user).Error; err != nil {
         c.IndentedJSON(http.StatusInternalServerError, gin.H{
@@ -75,7 +75,7 @@ func RedeemPoints(c *gin.Context){
         "redeemed_product": selectedProduct.Name,
         "redeemed_points": totalPoints,
         "balance": gin.H{
-            "redeemable_points": user.Points,
+            "redeemable_points": user.RedeemablePoints,
         },
     })
 }

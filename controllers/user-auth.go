@@ -54,7 +54,7 @@ func CreateAccount(c *gin.Context){
 	user.Password = hashedPassword
 	user.City = input.City
 	user.PhoneNumber = input.PhoneNumber
-	user.Points = 350	// allocate 350 points by default 
+	user.RedeemablePoints = 350	// allocate 350 points by default 
 
 	_,errr := user.SaveUser()
 
@@ -140,7 +140,7 @@ func  VerifyEmail(c *gin.Context) {
 
 	user.IsEmailVerified = true
 	updatedUser.SecretCode = ""
-	user.Points = user.Points + 150		// Allocate 150 points on email verfification
+	user.RedeemablePoints = user.RedeemablePoints + 150		// Allocate 150 points on email verfification
 
 	models.DB.Save(&user)
 	models.DB.Save(&updatedUser)
@@ -244,7 +244,7 @@ func GetCurrentUser(c *gin.Context) {
 		FirstName: currentUser.FirstName,
 		LastName: currentUser.LastName,
 		EmailAddress: currentUser.EmailAddress, 
-		Points: currentUser.Points,
+		RedeemablePoints: currentUser.RedeemablePoints,
 		IsEmailVerified: currentUser.IsEmailVerified,		
 	}
 
