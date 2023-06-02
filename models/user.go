@@ -56,8 +56,9 @@ type UserResponse struct {
     FirstName   string  `json:"first_name,omitempty"`
     LastName    string  `json:"last_name,omitempty"`
 	EmailAddress    string    `json:"email,omitempty"`
+    PhoneNumber     string  `json:"phone_number,omitempty"`
     RedeemablePoints  int  `json:"redeemable_points,omitempty"`
-    IsEmailVerified bool    `json:"is_email_verified,omitempty"`
+    City    string  `json:"city,omitempty"`
 }
 
 

@@ -244,8 +244,9 @@ func GetCurrentUser(c *gin.Context) {
 		FirstName: currentUser.FirstName,
 		LastName: currentUser.LastName,
 		EmailAddress: currentUser.EmailAddress, 
+		PhoneNumber: currentUser.PhoneNumber,
 		RedeemablePoints: currentUser.RedeemablePoints,
-		IsEmailVerified: currentUser.IsEmailVerified,		
+		City: currentUser.City,	
 	}
 
 	c.IndentedJSON(http.StatusOK, gin.H{
