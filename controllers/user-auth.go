@@ -54,7 +54,7 @@ func CreateAccount(c *gin.Context){
 	user.Password = hashedPassword
 	user.City = input.City
 	user.PhoneNumber = input.PhoneNumber
-	user.RedeemablePoints = 350	// allocate 350 points by default 
+	user.RedeemablePoints = 150	// allocate 150 points by default 
 
 	_,errr := user.SaveUser()
 
@@ -83,6 +83,9 @@ func CreateAccount(c *gin.Context){
 	if strings.Contains(firstName, " ") {
 		firstName = strings.Split(firstName, " ")[1]
 	}
+
+	// Save to Transactions Table
+	models.SaveToTransactions(user.Username, "EARN", "WELCOME BONUS", 150)
 
 	// ? Send Email
 	emailData := mail.EmailData{
@@ -140,10 +143,13 @@ func  VerifyEmail(c *gin.Context) {
 
 	user.IsEmailVerified = true
 	updatedUser.SecretCode = ""
-	user.RedeemablePoints = user.RedeemablePoints + 150		// Allocate 150 points on email verfification
+	user.RedeemablePoints = user.RedeemablePoints + 350		// Allocate 350 points on email verfification
 
 	models.DB.Save(&user)
 	models.DB.Save(&updatedUser)
+
+	// Save to Transactions Table
+	models.SaveToTransactions(user.Username, "EARN", "CONFIRM EMAIL ADDRESS BONUS", 350)
 
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"status": "success",
