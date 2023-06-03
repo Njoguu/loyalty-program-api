@@ -42,6 +42,7 @@ func main(){
 	protected.Use(middleware.DeserializeUser())
 	protected.GET("/me", controllers.GetCurrentUser)
 	protected.POST("/me/redeem", controllers.RedeemPoints)
+	protected.GET("/me/transaction-history", controllers.ViewTransactions)
 
 	// Auth
 	public.POST("/register", controllers.CreateAccount)
@@ -49,6 +50,8 @@ func main(){
 	public.POST("/login", controllers.Login)
 	public.GET("/logout", controllers.Logout)
 	public.GET("/sessions/oauth/google", controllers.GoogleOAuth)
+
+	// Admin
 
 	Server.Run(":" + "8000") // listen and serve on 0.0.0.0:8000	
 }
