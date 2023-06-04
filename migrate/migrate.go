@@ -20,6 +20,6 @@ func init() {
 
 func main() {
 	models.DB.AutoMigrate(&models.User{}, &models.VerifyEmails{},
-	&models.Products{}, &models.Transactions{})
+	&models.Products{}, &models.Transactions{}, &models.Admins{})
 	fmt.Println("? Migration complete")
 }

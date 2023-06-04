@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
 	controllers "api/controllers"
+	adminControllers "api/controllers/admin"
 )
 
 
@@ -29,6 +30,8 @@ func main(){
 	// Group endpoints
 	public := Server.Group("/api/auth")
 	protected := Server.Group("/api/users")
+	admins := Server.Group("/api/auth/admin")
+	admins_protected := Server.Group("/api/admin") 
 
 	// Test API works
 	Server.GET("/ping", func(c *gin.Context){
@@ -51,7 +54,15 @@ func main(){
 	public.GET("/logout", controllers.Logout)
 	public.GET("/sessions/oauth/google", controllers.GoogleOAuth)
 
-	// Admin
+	// Admins
+	admins_protected.Use(middleware.DeserializeUser())
+	admins.POST("/login", adminControllers.AdminLogin)
+	
+	admins_protected.GET("/logout", adminControllers.LogoutAdmin)
+	admins_protected.POST("/product", adminControllers.AddProduct)
+	admins_protected.PUT("/product/:id", adminControllers.UpdateProduct)
+	admins_protected.DELETE("/product/:id", adminControllers.DeleteProduct)
+	admins_protected.GET("/product", adminControllers.GetAllProducts)
 
 	Server.Run(":" + "8000") // listen and serve on 0.0.0.0:8000	
 }

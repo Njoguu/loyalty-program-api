@@ -10,5 +10,12 @@ type Products struct {
     Name string `json:"product_name"`
     Description string  `json:"product_description"`
     Price int   `json:"product_price"`
-    Count int   `json:"count"`
+    Quantity int   `json:"quantity"`
+}
+
+// MISC FUNCTIONS
+// Function to save product added by admin
+func SaveProduct(product *Products){
+    // Save Product to DB
+    DB.Create(&product)
 }
