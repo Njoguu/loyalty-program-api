@@ -6,6 +6,8 @@ member transaction history data.
 package controllers
 
 import (
+	"fmt"
+	"time"
     "net/http"
 	models "api/models"
 	"github.com/jinzhu/gorm"
@@ -34,6 +36,26 @@ func ViewTransactions(c *gin.Context){
         }
         return
 	}
+
+	// Convert date and time format
+	for i := range userTransactions {
+		parsedDate, err := time.Parse(time.RFC3339, userTransactions[i].Date)
+		if err != nil {
+			fmt.Println("Error parsing date:", err)
+			return
+		}
+		userTransactions[i].Date = parsedDate.Format("January 2, 2006")
+		
+		// time field is in "2006-01-02T15:04:05Z" format
+		parsedTime, err := time.Parse("2006-01-02T15:04:05Z", userTransactions[i].Time)
+		if err != nil {
+			fmt.Println("Error parsing time:", err)
+			return
+		}
+		userTransactions[i].Time = parsedTime.Format("15:04:05")
+	}
+
+	
 	
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"status": "success",
