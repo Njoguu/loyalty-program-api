@@ -46,6 +46,7 @@ func main(){
 	protected.GET("/me", controllers.GetCurrentUser)
 	protected.POST("/me/redeem", controllers.RedeemPoints)
 	protected.GET("/me/transaction-history", controllers.ViewTransactions)
+	protected.GET("/products", controllers.GetProducts)
 
 	// Auth
 	public.POST("/register", controllers.CreateAccount)
