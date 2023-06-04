@@ -1,0 +1,44 @@
+## Data Structures
+
+### TransactionHistory (object)
+- points: 150 (number, required): The number of points for the transaction.
+- state: EARN (string, required): The state of the transaction.
+- description: COMPLETE INFO SITE BONUS (string, required): The description of the transaction.
+- date: June 3, 2023 (string, required): The date of the transaction in ISO 8601 format.
+- time: 20:39:58 (string, required): The time of the transaction in ISO 8601 format.
+
+
+# Group Transaction History
+Loyalty Program Members View Transaction Data Endpoint
+
+
+## View Transaction History [/api/users/me/transaction-history]
+Get a list of a logged in user's transaction data
+
+### List all Transactions [GET]
+
++ Response 200 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + message: "Transaction History Retrieval successful!" (required)
+        + data (object, required)
+            + transactions (array[TransactionHistory], required) - The user's list of transactions
+
++ Response 401
+
+    + Attributes
+        + status: fail (required)
+        + message: "You are not logged in"
+        
++ Response 404
+
+    + Attributes
+        + status: fail (required)
+        + message: "Transactions not found" (required)
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: "Failed to retrieve transactions"
