@@ -57,7 +57,7 @@ type UserResponse struct {
     LastName    string  `json:"last_name,omitempty"`
 	EmailAddress    string    `json:"email,omitempty"`
     PhoneNumber     string  `json:"phone_number,omitempty"`
-    RedeemablePoints  int  `json:"redeemable_points,omitempty"`
+    RedeemablePoints  int  `json:"redeemable_points"`
     City    string  `json:"city,omitempty"`
 }
 
