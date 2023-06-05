@@ -56,7 +56,7 @@ func main(){
 	public.GET("/sessions/oauth/google", controllers.GoogleOAuth)
 
 	// Admins
-	admins_protected.Use(middleware.DeserializeUser())
+	admins_protected.Use(middleware.DeserializeAdmin())
 	admins.POST("/login", adminControllers.AdminLogin)
 	
 	admins_protected.GET("/logout", adminControllers.LogoutAdmin)

@@ -58,3 +58,55 @@ func DeserializeUser() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
+func DeserializeAdmin() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var token string
+		cookie, err := c.Cookie("token")
+
+		authorizationHeader := c.Request.Header.Get("Authorization")
+		fields := strings.Fields(authorizationHeader)
+
+		if len(fields) != 0 && fields[0] == "Bearer" {
+			token = fields[1]
+		} else if err == nil {
+			token = cookie
+		}
+
+		if token == "" {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"status": "fail",
+				"message": "You are not logged in",
+			})
+			return
+		}
+
+		// Load .env file
+		errr := godotenv.Load(".env")
+		if errr != nil {
+			log.Fatal("Error loading .env file")
+		}
+
+		sub, err := tokens.ValidateToken(token, os.Getenv("TOKEN_SECRET"))
+		if err != nil {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"status": "fail",
+				"message": err.Error(),
+			})
+			return
+		}
+
+		var admin models.Admins
+		result := models.DB.First(&admin, "id = ?", fmt.Sprint(sub))
+		if result.Error != nil {
+			c.AbortWithStatusJSON(http.StatusForbidden, gin.H{
+				"status": "fail",
+				"message": "Admin belonging to this token no longer exists",
+			})
+			return
+		}
+
+		c.Set("currentUser", admin)
+		c.Next()
+	}
+}
