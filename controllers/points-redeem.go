@@ -44,7 +44,18 @@ func RedeemPoints(c *gin.Context){
     // Calculate the total price for redemption
     totalPoints := selectedProduct.Price * request.Quantity
 
-    // TODO: Deduct request.Quantity from selectedProduct.Count
+    if selectedProduct.Quantity < 0 {
+        // Handle the error condition where the user tries to redeem more quantity than available
+        c.IndentedJSON(http.StatusBadRequest, gin.H{
+            "status": "error",
+            "message": "Insufficient quantity available for redemption",
+        })
+        return
+    }
+
+    // Deduct request.Quantity from selectedProduct.Count
+    selectedProduct.Quantity -= request.Quantity
+    models.DB.Save(&selectedProduct).Where("quantity > ?", 0)
 
     // Check if the user has enough points for redemption
     if  user.RedeemablePoints < totalPoints {
