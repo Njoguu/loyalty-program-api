@@ -85,7 +85,7 @@ func CreateAccount(c *gin.Context){
 	}
 
 	// Save to Transactions Table
-	models.SaveToTransactions(user.Username, "EARN", "WELCOME BONUS", 150)
+	models.SaveToTransactions(user.Username, "EARN", "WELCOME BONUS", 150, "")
 
 	// ? Send Email
 	emailData := mail.EmailData{
@@ -149,7 +149,7 @@ func  VerifyEmail(c *gin.Context) {
 	models.DB.Save(&updatedUser)
 
 	// Save to Transactions Table
-	models.SaveToTransactions(user.Username, "EARN", "CONFIRM EMAIL ADDRESS BONUS", 350)
+	models.SaveToTransactions(user.Username, "EARN", "CONFIRM EMAIL ADDRESS BONUS", 350, "")
 
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"status": "success",

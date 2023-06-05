@@ -78,7 +78,7 @@ func RedeemPoints(c *gin.Context){
     }
 
     // Create a new transaction record
-    models.SaveToTransactions(user.Username, "REDEEM", "PRODUCT REDEMPTION",totalPoints)
+    models.SaveToTransactions(user.Username, "REDEEM", "PRODUCT REDEMPTION",totalPoints, selectedProduct.Name)
 
     // Return the redeemed product and remaining points to the user
     c.IndentedJSON(http.StatusOK, gin.H{
