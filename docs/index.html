@@ -801,11 +801,12 @@
   "<span class="hljs-attribute">data</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">user</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">username</span>": <span class="hljs-value"><span class="hljs-string">"YourUsername23"</span></span>,
-      "<span class="hljs-attribute">firstname</span>": <span class="hljs-value"><span class="hljs-string">"your"</span></span>,
-      "<span class="hljs-attribute">lastname</span>": <span class="hljs-value"><span class="hljs-string">"your"</span></span>,
+      "<span class="hljs-attribute">firstname</span>": <span class="hljs-value"><span class="hljs-string">"yourFirstname"</span></span>,
+      "<span class="hljs-attribute">lastname</span>": <span class="hljs-value"><span class="hljs-string">"yourLastname"</span></span>,
       "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"user@example.com"</span></span>,
+      "<span class="hljs-attribute">phone_number</span>": <span class="hljs-value"><span class="hljs-string">"+25412345789"</span></span>,
       "<span class="hljs-attribute">redeemable_points</span>": <span class="hljs-value"><span class="hljs-number">250</span></span>,
-      "<span class="hljs-attribute">is_email_verified</span>": <span class="hljs-value"><span class="hljs-literal">true</span>
+      "<span class="hljs-attribute">city</span>": <span class="hljs-value"><span class="hljs-string">"Nairobi"</span>
     </span>}
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
@@ -826,30 +827,37 @@
             </span>}</span>,
             "<span class="hljs-attribute">firstname</span>": <span class="hljs-value">{
               "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
-              "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"firstname (required) - The user's first name"</span>
+              "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"The user's first name"</span>
             </span>}</span>,
             "<span class="hljs-attribute">lastname</span>": <span class="hljs-value">{
               "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
-              "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"lastname (required) - The user's last name"</span>
+              "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"The user's last name"</span>
             </span>}</span>,
             "<span class="hljs-attribute">email</span>": <span class="hljs-value">{
               "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
               "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"The user's email"</span>
             </span>}</span>,
+            "<span class="hljs-attribute">phone_number</span>": <span class="hljs-value">{
+              "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+              "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"The user's phone number"</span>
+            </span>}</span>,
             "<span class="hljs-attribute">redeemable_points</span>": <span class="hljs-value">{
               "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"number"</span></span>,
               "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"The user's total points"</span>
             </span>}</span>,
-            "<span class="hljs-attribute">is_email_verified</span>": <span class="hljs-value">{
-              "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"boolean"</span></span>,
-              "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"The user's email verification status"</span>
+            "<span class="hljs-attribute">city</span>": <span class="hljs-value">{
+              "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+              "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"The user's city"</span>
             </span>}
           </span>}</span>,
           "<span class="hljs-attribute">required</span>": <span class="hljs-value">[
             <span class="hljs-string">"username"</span>,
+            <span class="hljs-string">"firstname"</span>,
+            <span class="hljs-string">"lastname"</span>,
             <span class="hljs-string">"email"</span>,
+            <span class="hljs-string">"phone_number"</span>,
             <span class="hljs-string">"redeemable_points"</span>,
-            <span class="hljs-string">"is_email_verified"</span>
+            <span class="hljs-string">"city"</span>
           ]</span>,
           "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"The user data"</span>
         </span>}
