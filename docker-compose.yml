@@ -26,7 +26,7 @@ services:
     env_file:
       - .env
     ports:
-      - 8080:8080
+      - 8000:8000
     networks:
       - loyalty_program_network
     depends_on:
