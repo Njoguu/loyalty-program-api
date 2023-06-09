@@ -28,7 +28,7 @@ services:
     ports:
       - 8080:8080
     networks:
-      - restapi_network
+      - loyalty_program_network
     depends_on:
       - db
 
