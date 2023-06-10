@@ -57,13 +57,13 @@ Docker Compose will build and start the Loyalty Program API, along with the requ
   - Build application
 
   ```sh
-  $ go build -o loyalty-program-api || make gobuild
+  $ go build -o loyalty-program-api || make build
   ```
 
   - Start application in development
 
   ```sh
-  $ go run main.go | make gorun
+  $ go run main.go | make start
   ```
 
 * ##### Docker Lifecycle
@@ -71,19 +71,19 @@ Docker Compose will build and start the Loyalty Program API, along with the requ
   - Build container
 
   ```sh
-  $ docker-compose build | make dbuild
+  $ docker-compose build | make dcb
   ```
   
   - Run container
 
   ```sh
-  $ docker-compose up -d --build | make dbup
+  $ docker-compose up -d --build | make dcu
   ```
 
   - Stop container
 
   ```sh
-  $ docker-compose down | make ddown
+  $ docker-compose down | make dcd
   ```
 
 ## Usage
