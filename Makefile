@@ -1,7 +1,36 @@
 # Variables
-APP_NAME=LPSA
-VERSION=1.0.0
+APP_NAME=loyalty-program-api
 
-# Targets
-run:
-	go run main.go
+#================================
+#== DOCKER Targets
+#================================
+COMPOSE := @docker-compose
+
+dcb:
+	${COMPOSE} build
+
+dcu:
+	${COMPOSE} up -d build
+
+dcd:
+	${COMPOSE} down
+
+#================================
+#== GOLANG ENVIRONMENT Targets
+#================================
+GO := @go
+
+install:
+	${GO} get .
+
+tidy:
+	${GO} mod tidy
+
+start:
+	${GO} run main.go
+	
+build:
+	${GO} build -o ${APP_NAME} .
+
+migratedb:
+	${GO} run migrate/migrate.go
