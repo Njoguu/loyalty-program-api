@@ -23,4 +23,4 @@ jobs:
           go-version: ${{ matrix.go-version }}
 
     - name: Build
-      run: go build -o main .
+      run: go build -o loyalty-program-api .
