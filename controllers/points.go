@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Function to redeem points
 func RedeemPoints(c *gin.Context){
 	// Get the logged-in user from the authentication middleware
     user := c.MustGet("currentUser").(models.User)
@@ -90,4 +91,27 @@ func RedeemPoints(c *gin.Context){
             "redeemable_points": user.RedeemablePoints,
         },
     })
+}
+
+// TODO: Read Amount from mpesa transaction history
+
+// TODO: Add the transaction to user's transaction history
+
+// Calculate the number of points to award
+func CalculatePoints(amount float64) int {
+	
+	if amount < 500 {
+		points := int(amount / 100) * 1
+		return points
+	} else if amount <= 1500 {
+		points := int(amount / 100) * 4
+		return points
+	} else if amount <= 3000 {
+		return 70
+	} else if amount <= 5000 {
+		return 150
+	} else {
+		return 300
+	}
+
 }
