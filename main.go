@@ -30,7 +30,7 @@ func main(){
 	// Group endpoints
 	public := Server.Group("/api/auth")
 	protected := Server.Group("/api/users")
-	admins := Server.Group("/api/auth/admin")
+	admins := Server.Group("/api/admin")
 	admins_protected := Server.Group("/api/admin") 
 
 	// Test API works
