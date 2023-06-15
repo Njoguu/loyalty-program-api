@@ -12,6 +12,7 @@ import (
 	"strings"
 	"strconv"
 	"net/http"
+	"api/utils"
 	models "api/models"
 	mail "api/utils/mail"
 	token "api/utils/token"
@@ -55,6 +56,7 @@ func CreateAccount(c *gin.Context){
 	user.City = input.City
 	user.PhoneNumber = input.PhoneNumber
 	user.RedeemablePoints = 150	// allocate 150 points by default 
+	user.VirtualCardNumber = utils.GenerateCardNumber()
 
 	_,errr := user.SaveUser()
 
@@ -253,6 +255,7 @@ func GetCurrentUser(c *gin.Context) {
 		PhoneNumber: currentUser.PhoneNumber,
 		RedeemablePoints: currentUser.RedeemablePoints,
 		City: currentUser.City,	
+		VirtualCardNumber: currentUser.VirtualCardNumber,
 	}
 
 	c.IndentedJSON(http.StatusOK, gin.H{

@@ -21,6 +21,7 @@ type User struct {
     PhoneNumber string `json:"phone_number"`
     RedeemablePoints int `json:"redeemable_points"`
     IsEmailVerified bool `json:"is_email_verified" gorm:"not null; default:false"`
+    VirtualCardNumber string `json:"card_number" gorm:"unique"` 
 }	
 
 // User Creation Request Data
@@ -59,6 +60,7 @@ type UserResponse struct {
     PhoneNumber     string  `json:"phone_number,omitempty"`
     RedeemablePoints  int  `json:"redeemable_points"`
     City    string  `json:"city,omitempty"`
+    VirtualCardNumber string `json:"card_number"` 
 }
 
 
