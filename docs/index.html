@@ -323,15 +323,7 @@
   ]</span>,
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div></div></div><div id="membership-service-get-user-data" class="resource"><h3 class="resource-heading">Get User Data <a href="#membership-service-get-user-data" class="permalink">&nbsp;&para;</a></h3><p>Retrieve the currently logged-in user’s information.</p>
-<div id="membership-service-get-user-data-get" class="action get"><h4 class="action-heading"><div class="name">Get user data</div><a href="#membership-service-get-user-data-get" class="method get">GET</a><code class="uri">/api/users/me</code></h4><ul>
-<li>
-<p>Request</p>
-<pre><code>+ Headers 
-
-      Cookie: token=<span class="hljs-tag">&lt;<span class="hljs-title">token_value</span>&gt;</span></code></pre>
-</li>
-</ul>
-<h4>Example URI</h4><div class="definition"><span class="method get">GET</span>&nbsp;<span class="uri"><span class="hostname"></span>/api/users/me</span></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
+<div id="membership-service-get-user-data-get" class="action get"><h4 class="action-heading"><div class="name">Get user data</div><a href="#membership-service-get-user-data-get" class="method get">GET</a><code class="uri">/api/users/me</code></h4><h4>Example URI</h4><div class="definition"><span class="method get">GET</span>&nbsp;<span class="uri"><span class="hostname"></span>/api/users/me</span></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Cookie</span>: <span class="hljs-string">token=&lt;token_value&gt;</span></code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"success"</span></span>,
   "<span class="hljs-attribute">data</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">user</span>": <span class="hljs-value">{
@@ -341,7 +333,8 @@
       "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"user@example.com"</span></span>,
       "<span class="hljs-attribute">phone_number</span>": <span class="hljs-value"><span class="hljs-string">"+25412345789"</span></span>,
       "<span class="hljs-attribute">redeemable_points</span>": <span class="hljs-value"><span class="hljs-number">250</span></span>,
-      "<span class="hljs-attribute">city</span>": <span class="hljs-value"><span class="hljs-string">"Nairobi"</span>
+      "<span class="hljs-attribute">city</span>": <span class="hljs-value"><span class="hljs-string">"Nairobi"</span></span>,
+      "<span class="hljs-attribute">card_number</span>": <span class="hljs-value"><span class="hljs-string">"0123456789012"</span>
     </span>}
   </span>}
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
@@ -383,6 +376,10 @@
             "<span class="hljs-attribute">city</span>": <span class="hljs-value">{
               "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
               "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"The user's city"</span>
+            </span>}</span>,
+            "<span class="hljs-attribute">card_number</span>": <span class="hljs-value">{
+              "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
+              "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"The user's virtual card number"</span>
             </span>}
           </span>}</span>,
           "<span class="hljs-attribute">required</span>": <span class="hljs-value">[
@@ -392,7 +389,8 @@
             <span class="hljs-string">"email"</span>,
             <span class="hljs-string">"phone_number"</span>,
             <span class="hljs-string">"redeemable_points"</span>,
-            <span class="hljs-string">"city"</span>
+            <span class="hljs-string">"city"</span>,
+            <span class="hljs-string">"card_number"</span>
           ]</span>,
           "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"The user data"</span>
         </span>}
@@ -1201,7 +1199,7 @@
     <span class="hljs-string">"status"</span>
   ]</span>,
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
-</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section></div></div></div><p style="text-align: center;" class="text-muted">Generated by&nbsp;<a href="https://github.com/danielgtaylor/aglio" class="aglio">aglio</a>&nbsp;on 08 Jun 2023</p><script>/* eslint-env browser */
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section></div></div></div><p style="text-align: center;" class="text-muted">Generated by&nbsp;<a href="https://github.com/danielgtaylor/aglio" class="aglio">aglio</a>&nbsp;on 15 Jun 2023</p><script>/* eslint-env browser */
 /* eslint quotes: [2, "single"] */
 'use strict';
 
