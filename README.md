@@ -86,17 +86,6 @@ Docker Compose will build and start the Loyalty Program API, along with the requ
   $ docker-compose down | make dcd
   ```
 
-## Usage
-
-![images](https://user-images.githubusercontent.com/60213982/224079894-df3edad3-cea7-45c4-9c3b-5017926a54b2.png)
-
-### Endpoints
-The following endpoints will be available:
-
-![images](https://user-images.githubusercontent.com/60213982/224079894-df3edad3-cea7-45c4-9c3b-5017926a54b2.png)
-
-All endpoints except for account creation and authentication require the Authorization header with a valid JWT token.
-
 ## Documentation
 
 The [documentation](https://njoguu.github.io/loyalty-program-api/) for this project is generated using [aglio](https://github.com/danielgtaylor/aglio), an API Blueprint renderer that supports multiple themes and outputs static HTML that can be served by any web host.
