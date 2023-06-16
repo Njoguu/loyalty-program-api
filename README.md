@@ -16,7 +16,85 @@ This is a loyalty points API built with GO and the Gin web framework. The API al
 - Gin web framework (version 1.8 or higher)
 - PostgreSQL database 
 
-## Environment
+## Features
+The API has put in place the following features:
+- [x] Built on top of [Gin](https://github.com/gin-gonic/gin)
+- [x] Uses the supported database without writing any extra configuration files
+- [x] Reading Environment variables using [godotenv](https://github.com/joho/godotenv)
+- [ ] Caching responses
+- [ ] Logging
+- [ ] Follows CORS policy
+- [ ] DB Migration Support
+- [ ] Comprehensive Error Handling in API Services
+- [x] Basic auth
+- [x] Password hashing with `bcrypt`
+- [ ] Simple firewall (whitelist/blacklist IP)
+- [ ] Webhook Integration for Real-time Deployment Status Notifications
+- [ ] Request data validation
+- [x] Email verification (sending verification email)
+- [ ] Forgot password recovery
+- [x] Render `HTML` templates
+- [ ] Forward error logs and crash reports.
+- [ ] User logout (Send an expired cookie to user’s browser or client which invalidates the user’s ‘session’)
+
+## Project Structure
+The project follows the following directory structure:
+```
+.
+├── controllers
+│   ├── admin
+│   │   ├── admin-auth.go
+│   │   └── admin-endpoints.go
+│   ├── get-products.go
+│   ├── googleauth.go
+│   ├── points.go
+│   ├── transactions-history.go
+│   └── user-auth.go
+├── docs
+│   ├── admins
+│   │   └── admins.apib
+│   ├── auth.apib
+│   ├── index.apib
+│   ├── index.html
+│   ├── points.apib
+│   ├── products.apib
+│   └── transaction-history.apib
+├── middlewares
+│   └── middlewares.go
+├── migrate
+│   └── migrate.go
+├── models
+│   ├── admins.go
+│   ├── products.go
+│   ├── setup.go
+│   ├── transactions.go
+│   └── user.go
+├── templates
+│   ├── styles.html
+│   ├── templates.html
+│   └── verificationCode.html
+├── utils
+│   ├── mail
+│   │   ├── email.go
+│   │   └── encode.go
+│   ├── token
+│   │   └── token.go
+│   ├── googleOAuth.go
+│   └── utils.go
+├── .gitignore
+├── Dockerfile
+├── LICENSE
+├── Makefile
+├── README.md
+├── docker-compose.yml
+├── env.sample
+├── go.mod
+├── go.sum
+└── main.go
+
+```
+
+## Environment Installation
 ### Development Setup Instructions
 Follow the steps below to set up the development environment for the Loyalty Program API:
 
@@ -85,6 +163,21 @@ Docker Compose will build and start the Loyalty Program API, along with the requ
   ```sh
   $ docker-compose down | make dcd
   ```
+
+## API Routes
+
+### User Authentication
+
+Users have the following routes available for their authentication:
+
+| Path          | Method | Required JSON | Header                                | Description                                                             |
+| ------------- | ------ | ------------- | ------------------------------------- | ----------------------------------------------------------------------- |
+| /api/auth/register   | POST   | username, firstname, lastname, gender, email, password, city, phone_number         |                                       | Create User account and send activation email                      |
+| /api/auth/verify-email/{secret_code}   | GET   |          |                                       | Verify email of correspondent account and grant login access |
+| /api/auth/login | POST   | email, password               |  | Validate logging in of user                                                            |
+| /api/auth/logout  | GET   |               | Authorizaiton: "Bearer token" | Invalidate the user’s ‘session’.                                                  |
+
+
 
 ## Documentation
 
