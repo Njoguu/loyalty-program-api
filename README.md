@@ -13,8 +13,10 @@ This is a loyalty points API built with GO and the Gin web framework. The API al
 
 ## Requirements
 - GO (version 1.17 or higher)
-- Gin web framework (version 1.8 or higher)
-- PostgreSQL database 
+
+## Supported databases
+- PostgreSQL
+> **Note** loyalty-program-api uses [GORM](https://github.com/go-gorm/gorm) as its ORM
 
 ## Features
 The API has put in place the following features:
