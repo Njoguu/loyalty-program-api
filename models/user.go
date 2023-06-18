@@ -107,3 +107,21 @@ func GetUser(uid uint) (User, error){
 func (user *User)PrepareGive(){
     user.Password = ""
 }
+
+// Function to update the user's password in the database
+func UpdateUserPassword(userId uint64, hashedPassword string) error {
+
+    // Find the user by email
+	var user User
+	if err := DB.First(&user, userId).Error; err != nil {
+		return err
+	}
+
+	// Update the user's password
+	user.Password = string(hashedPassword)
+	if err := DB.Save(&user).Error; err != nil {
+		return err
+	}
+
+	return nil
+}

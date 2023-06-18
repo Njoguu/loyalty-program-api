@@ -54,6 +54,8 @@ func main(){
 	public.POST("/login", controllers.Login)
 	public.GET("/logout", controllers.Logout)
 	public.GET("/sessions/oauth/google", controllers.GoogleOAuth)
+	public.POST("/reset-password", controllers.ResetPassword)
+	public.PATCH("/change-password/:id", controllers.ChangePassword)
 
 	// Admins
 	admins_protected.Use(middleware.DeserializeAdmin())
