@@ -96,7 +96,7 @@ func CreateAccount(c *gin.Context){
 		Subject:   "Your account verification code",
 	}
 
-	mail.SendEmail(&user, &emailData)
+	mail.SendEmail(&user, &emailData, "verificationCode.html")
 
 	message := "We sent an email with a verification code to " + user.EmailAddress
 
@@ -265,9 +265,6 @@ func GetCurrentUser(c *gin.Context) {
 		},
 	})
 }
-
-// TODO: Function to Reset Password
-// TODO: send email with reset link
 
 // Change Password
 func ChangePassword(c *gin.Context){

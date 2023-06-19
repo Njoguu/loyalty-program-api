@@ -94,7 +94,7 @@ func ForgotPassword(c *gin.Context) {
 	}
 
 	// Send Password Reset Email
-	util.SendPasswordResetEmail(&user, &emailData, "passwordReset.html")
+	util.SendEmail(&user, &emailData, "passwordReset.html")
 
 	if err != nil {
 		c.IndentedJSON(http.StatusBadGateway, gin.H{
