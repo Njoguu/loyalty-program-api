@@ -109,7 +109,7 @@ func (user *User)PrepareGive(){
 }
 
 // Function to update the user's password in the database
-func UpdateUserPassword(userId uint64, hashedPassword string) error {
+func UpdateUserPassword(userId uint, hashedPassword string) error {
 
     // Find the user by email
 	var user User

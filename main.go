@@ -47,6 +47,7 @@ func main(){
 	protected.POST("/me/redeem", controllers.RedeemPoints)
 	protected.GET("/me/transaction-history", controllers.ViewTransactions)
 	protected.GET("/products", controllers.GetProducts)
+	protected.PATCH("/me/change-password", controllers.ChangePassword)
 
 	// Auth
 	public.POST("/register", controllers.CreateAccount)
@@ -54,8 +55,7 @@ func main(){
 	public.POST("/login", controllers.Login)
 	public.GET("/logout", controllers.Logout)
 	public.GET("/sessions/oauth/google", controllers.GoogleOAuth)
-	public.POST("/reset-password", controllers.ResetPassword)
-	public.PATCH("/change-password/:id", controllers.ChangePassword)
+	// public.GET("/reset-password", controllers.ResetPassword) TODO: Reset Password route
 
 	// Admins
 	admins_protected.Use(middleware.DeserializeAdmin())

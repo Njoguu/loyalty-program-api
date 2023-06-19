@@ -7,7 +7,6 @@ package controllers
 
 import (
 	"os"
-	"fmt"
 	"log"
 	"time"
 	"strings"
@@ -17,7 +16,6 @@ import (
 	models "api/models"
 	mail "api/utils/mail"
 	token "api/utils/token"
-	"github.com/jinzhu/gorm"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/thanhpk/randstr"
@@ -268,59 +266,13 @@ func GetCurrentUser(c *gin.Context) {
 	})
 }
 
+// TODO: Function to Reset Password
 // TODO: send email with reset link
-// Reset Password
-func ResetPassword(c *gin.Context) {
-	// Get user email
-	var userEmail struct{
-		EmailAddress string	`json:"email"`
-	}
-
-	if err := c.ShouldBindJSON(&userEmail); err != nil{
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"status": "fail",
-			"error": err.Error(),
-		})
-		return
-	}
-
-	// Check if user exists
-	var user models.User
-	if err := models.DB.Where("email_address = ?", userEmail.EmailAddress).First(&user).Error; err != nil{
-		if err == gorm.ErrRecordNotFound {
-            c.IndentedJSON(http.StatusNotFound, gin.H{
-                "status":  "fail",
-                "message": "User not found",
-            })
-        } else {
-            c.IndentedJSON(http.StatusInternalServerError, gin.H{
-                "status":  "fail",
-                "message": "Failed to retrieve user!",
-            })
-        }
-        return
-	}
-
-	// Redirect the user to the reset password form with the reset token in the URL
-	redirectURL := fmt.Sprintf("http://localhost:8000/api/auth/change-password?id=%d", user.ID)
-	c.Redirect(http.StatusSeeOther, redirectURL) // TODO: remove hardcoded URL
-}
 
 // Change Password
 func ChangePassword(c *gin.Context){
-	// Get the reset token from the URL query parameters
-	userIdStr := c.Query("id")
-
-	// Convert the userId string to uint
-	userId, err := strconv.ParseUint(userIdStr, 10, 64)
-	if err != nil {
-		// Handle the error (invalid user ID) and display an error message or redirect
-		c.IndentedJSON(http.StatusInternalServerError, gin.H{
-			"status": "error",
-			"message": "Invalid User id",
-		})
-		return
-	}
+	// Get Logged In user
+	currentUser := c.MustGet("currentUser").(models.User)
 
 	// Get the new password and confirm password from the request body
 	var passwordReset struct {
@@ -356,7 +308,7 @@ func ChangePassword(c *gin.Context){
 	}
 
 	// Update the user's password in the database
-	err = models.UpdateUserPassword(userId, hashedPassword)
+	err = models.UpdateUserPassword(currentUser.ID, hashedPassword)
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{
 			"status": "error",
@@ -368,6 +320,6 @@ func ChangePassword(c *gin.Context){
 	// Password reset successful
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"status": "success",
-		"message": "Password reset successful",
+		"message": "Password change successful",
 	})
 }
