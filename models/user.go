@@ -45,6 +45,15 @@ type VerifyEmails struct {
     User         User      `gorm:"foreignKey:Username"`
 }
 
+type PasswordReset struct{
+    gorm.Model
+    Username     string         `gorm:"unique" json:"username"`
+    EmailAddress string         `json:"email"`
+    PasswordResetCode   string         `json:"reset_code"`
+    ExpiredAt    time.Time `json:"expired_at" gorm:"default: (now() + interval '15 minutes')"`
+    User         User      `gorm:"foreignKey:Username"`
+}
+
 // User Login Request data
 type LoginInput struct {
 	EmailAddress    string `json:"email"  binding:"required"`
@@ -61,6 +70,17 @@ type UserResponse struct {
     RedeemablePoints  int  `json:"redeemable_points"`
     City    string  `json:"city,omitempty"`
     VirtualCardNumber string `json:"card_number"` 
+}
+
+// ForgotPasswordInput
+type ForgotPasswordInput struct{
+    EmailAddress string `json:"email" binding:"required"`
+}
+
+// ResetPasswordInput
+type ResetPasswordInput struct{
+    NewPassword string  `json:"new_password" binding:"required"`
+    ConfirmPassword string  `json:"confirm_password" binding:"required"`
 }
 
 
@@ -111,7 +131,7 @@ func (user *User)PrepareGive(){
 // Function to update the user's password in the database
 func UpdateUserPassword(userId uint, hashedPassword string) error {
 
-    // Find the user by email
+    // Find the user by id
 	var user User
 	if err := DB.First(&user, userId).Error; err != nil {
 		return err

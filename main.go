@@ -55,7 +55,8 @@ func main(){
 	public.POST("/login", controllers.Login)
 	public.GET("/logout", controllers.Logout)
 	public.GET("/sessions/oauth/google", controllers.GoogleOAuth)
-	// public.GET("/reset-password", controllers.ResetPassword) TODO: Reset Password route
+	public.POST("/forgot-password", controllers.ForgotPassword) 
+	public.PATCH("/reset-password/:resetToken", controllers.ResetPassword)
 
 	// Admins
 	admins_protected.Use(middleware.DeserializeAdmin())
