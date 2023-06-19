@@ -265,3 +265,61 @@ func GetCurrentUser(c *gin.Context) {
 		},
 	})
 }
+
+// TODO: Function to Reset Password
+// TODO: send email with reset link
+
+// Change Password
+func ChangePassword(c *gin.Context){
+	// Get Logged In user
+	currentUser := c.MustGet("currentUser").(models.User)
+
+	// Get the new password and confirm password from the request body
+	var passwordReset struct {
+		NewPassword     string `json:"new_password"`
+		ConfirmPassword string `json:"confirm_password"`
+	}
+
+	if err := c.ShouldBindJSON(&passwordReset); err != nil{
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status": "fail",
+			"error": err.Error(),
+		})
+		return
+	}
+
+	// Check if the new password and confirm password match
+	if passwordReset.NewPassword != passwordReset.ConfirmPassword {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status": "error",
+			"message": "Passwords do not match",
+		})
+		return
+	}
+
+	// Hash the new password
+	hashedPassword, err := models.HashPassword(passwordReset.NewPassword)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"message": "Failed to generate hashed password",
+		})
+		return
+	}
+
+	// Update the user's password in the database
+	err = models.UpdateUserPassword(currentUser.ID, hashedPassword)
+	if err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"message": "Failed to update password",
+		})
+		return
+	}
+
+	// Password reset successful
+	c.IndentedJSON(http.StatusOK, gin.H{
+		"status": "success",
+		"message": "Password change successful",
+	})
+}
