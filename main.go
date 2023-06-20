@@ -3,8 +3,8 @@ package main
 import (
 	"net/http"
 	"api/models"
-	"api/middlewares"
 	"github.com/gin-gonic/gin"
+	middleware "api/middlewares"
 	"github.com/gin-contrib/cors"
 	controllers "api/controllers"
 	adminControllers "api/controllers/admin"
@@ -15,10 +15,16 @@ var Server *gin.Engine
 
 func init(){
 	// Initialzie DB Connection
-	models.ConnectDB() 
-	
+	models.ConnectDB()
+
+	// Initialize Redis Connection
+	models.InitRedisClient()
+
+	// Initialize Cache Connection
+	models.InitCache()
+
 	Server = gin.Default() //router
-}	
+}
 
 func main(){
 	corsConfig := cors.DefaultConfig()
@@ -45,8 +51,8 @@ func main(){
 	protected.Use(middleware.DeserializeUser())
 	protected.GET("/me", controllers.GetCurrentUser)
 	protected.POST("/me/redeem", controllers.RedeemPoints)
-	protected.GET("/me/transaction-history", controllers.ViewTransactions)
-	protected.GET("/products", controllers.GetProducts)
+	protected.GET("/me/transaction-history", middleware.CacheMiddleware(), controllers.ViewTransactions)
+	protected.GET("/products", middleware.CacheMiddleware(), controllers.GetProducts)
 	protected.PATCH("/me/change-password", controllers.ChangePassword)
 
 	// Auth
