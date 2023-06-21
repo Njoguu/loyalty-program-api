@@ -2,16 +2,19 @@ package controllers
 
 import (
 	"os"
-	"log"
 	"time"
+	"errors"
 	"strconv"
 	"net/http"
 	models "api/models"
+	"github.com/rs/zerolog"
 	token "api/utils/token"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
+// Define Logger Instance
+var logger = zerolog.New(os.Stdout).Level(zerolog.InfoLevel).With().Timestamp().Caller().Logger()
 
 // login admin
 func AdminLogin(c *gin.Context) {
@@ -50,7 +53,7 @@ func AdminLogin(c *gin.Context) {
 	// Load .env file
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logger.Error().Err(errors.New("reading environment variables failed")).Msgf("%v",err)
 	}
 
 	// Generate Token
@@ -64,7 +67,7 @@ func AdminLogin(c *gin.Context) {
 
 	TOKEN_EXPIRES_IN, err := time.ParseDuration(tokenExpiresInStr)
 	if err != nil {
-		log.Fatalf("invalid value for TOKEN_EXPIRES_IN: %s", tokenExpiresInStr)
+		logger.Error().Err(errors.New("invalid value for TOKEN_EXPIRES_IN")).Msgf("%v",err)
 	}
 
 	// Generate Token

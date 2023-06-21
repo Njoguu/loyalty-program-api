@@ -7,8 +7,8 @@ package controllers
 
 import (
 	"os"
-	"log"
 	"time"
+	"errors"
 	"strings"
 	"strconv"
 	"net/http"
@@ -199,7 +199,7 @@ func Login(c *gin.Context) {
 	// Load .env file
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logger.Error().Err(errors.New("reading environment variables failed")).Msgf("%v",err)
 	}
 
 	// Generate Token
@@ -213,7 +213,7 @@ func Login(c *gin.Context) {
 
 	TOKEN_EXPIRES_IN, err := time.ParseDuration(tokenExpiresInStr)
 	if err != nil {
-		log.Fatalf("invalid value for TOKEN_EXPIRES_IN: %s", tokenExpiresInStr)
+		logger.Error().Err(errors.New("invalid value for TOKEN_EXPIRES_IN")).Msgf("%v",err)
 	}
 	
 	// Generate Token

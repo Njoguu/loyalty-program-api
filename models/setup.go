@@ -8,9 +8,10 @@ package models
 import (
 	"os"
 	"fmt"
-	"log"
+	"errors"
 	"context"
 	"strconv"
+	"github.com/rs/zerolog"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
 	"github.com/go-redis/cache/v8"
@@ -27,13 +28,16 @@ var RDB *redis.Client
 // Define the cache instance
 var MYCACHE *cache.Cache
 
+// Define Logger Instance
+var logger = zerolog.New(os.Stdout).Level(zerolog.InfoLevel).With().Timestamp().Caller().Logger()
+
 // Initialize the Redis client
 func InitRedisClient() {
 
 	// Load .env file
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logger.Error().Err(errors.New("reading environment variables failed")).Msgf("%v",err)
 	}
 
 	redisDBStr := os.Getenv("REDISDATABASE")
@@ -53,9 +57,9 @@ func InitRedisClient() {
 	// Ping the Redis server to check the connection
 	_, errr := rdb.Ping(context.Background()).Result()
 	if errr != nil{
-		fmt.Printf("[REDIS-CLIENT]: Failed to connect to Redis: %v", err)
+		logger.Error().Err(errors.New("connection to redis instance failed")).Msgf("%v",errr)
 	}else{
-		fmt.Println("[REDIS-CLIENT]: Redis connection initiated!")
+		logger.Info().Msg("redis connection initiated")
 	}
 
 	RDB = rdb
@@ -67,6 +71,8 @@ func InitCache() {
 		Redis: RDB,
 	})
 
+	logger.Info().Msg("cache instance initiated")
+
 	MYCACHE = mycache
 }
 
@@ -76,7 +82,7 @@ func ConnectDB(){
 	// Load .env file
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logger.Error().Err(errors.New("reading environment variables failed")).Msgf("%v",err)
 	}
 
 	// Get Database connection credentials
@@ -89,7 +95,7 @@ func ConnectDB(){
 	// convert port to integer
 	port, err := strconv.Atoi(portStr)
 	if err != nil {
-		return
+		logger.Error().Err(errors.New("converting port to integer failed")).Msgf("%v",err)
 	}
 
 	// connection string
@@ -99,10 +105,9 @@ func ConnectDB(){
 	// Connect to Database
 	db, err := gorm.Open("postgres", connStr)
 	if err != nil{
-		fmt.Printf("[POSTGRES-DATABASE]: Cannot connect to database! %v", err)
-		log.Fatal("Connection error:", err)
+		logger.Error().Err(errors.New("connection to postgres database failed")).Msgf("%v",err)
 	}else{
-		fmt.Println("[POSTGRES-DATABASE]: Database connection initiated!")
+		logger.Info().Msg("postgres database connection initiated")
 	}
 
 	DB = db

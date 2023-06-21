@@ -1,6 +1,7 @@
 package models
 
 import (
+    "errors"
     TIME "time"
 )
 
@@ -38,5 +39,7 @@ func SaveToTransactions(
         transaction.Time = currentTime.Format("15:04:05")
         transaction.Product = redeemed_product
         
-        DB.Create(&transaction)
+       if err := DB.Create(&transaction).Error; err != nil{
+        logger.Error().Err(errors.New("saving transaction to db failed")).Msgf("%v",err)
+       }
 }

@@ -1,6 +1,7 @@
 package models
 
 import (
+    "errors"
 	"github.com/jinzhu/gorm"
 )
 
@@ -17,5 +18,7 @@ type Products struct {
 // Function to save product added by admin
 func SaveProduct(product *Products){
     // Save Product to DB
-    DB.Create(&product)
+    if err := DB.Create(&product).Error; err != nil{
+		logger.Error().Err(errors.New("saving product to db failed")).Msgf("%v",err)
+    }
 }

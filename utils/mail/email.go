@@ -1,20 +1,20 @@
 package utils
 
 import (
-	"api/models"
+	"os"
+	"fmt"
 	"bytes"
+	"errors"
+	"strconv"
+	"api/models"
 	"crypto/tls"
 	"html/template"
-	"log"
-	"fmt"
-	"os"
 	"path/filepath"
-	"strconv"
+	"gopkg.in/gomail.v2"
+	"github.com/rs/zerolog"
 	"github.com/k3a/html2text"
-	// "github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
-	"gopkg.in/gomail.v2"
 )
 
 type EmailData struct {
@@ -22,6 +22,9 @@ type EmailData struct {
 	FirstName string
 	Subject   string
 }
+
+// Define Logger Instance
+var logger = zerolog.New(os.Stdout).Level(zerolog.InfoLevel).With().Timestamp().Caller().Logger()
 
 // ? Email template parser
 
@@ -48,7 +51,7 @@ func SendEmail(user *models.User, data *EmailData, templateName string) {
 	// Load .env file
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logger.Error().Err(errors.New("reading environment variables failed")).Msgf("%v",err)
 	}
 
 	// Sender data.
@@ -62,14 +65,14 @@ func SendEmail(user *models.User, data *EmailData, templateName string) {
 	// convert port to integer
 	smtpPort, err := strconv.Atoi(smtpPortStr)
 	if err != nil {
-		return
+		logger.Error().Err(errors.New("converting port to integer failed")).Msgf("%v",err)
 	}
 
 	var body bytes.Buffer
 
 	template, err := ParseTemplateDir("templates")
 	if err != nil {
-		log.Fatal("Could not parse template", err)
+		logger.Error().Err(errors.New("could not parse template")).Msgf("%v",err)
 	}
 
 	template = template.Lookup(templateName)
@@ -89,6 +92,6 @@ func SendEmail(user *models.User, data *EmailData, templateName string) {
 
 	// Send Email
 	if err := d.DialAndSend(m); err != nil {
-		log.Fatal("Could not send email: ", err)
+		logger.Error().Err(errors.New("sending email failed")).Msgf("%v",err)
 	}
 }

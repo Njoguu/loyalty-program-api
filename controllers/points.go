@@ -93,7 +93,7 @@ func RedeemPoints(c *gin.Context){
     })
 }
 
-// TODO: Read Amount from mpesa transaction history
+// TODO: Use Virtual Card Number to allocate earned points from purchase
 
 // TODO: Add the transaction to user's transaction history
 

@@ -3,8 +3,8 @@ package controllers
 import (
 	"os"
 	"fmt"
-	"log"
 	"time"
+	"errors"
 	"strconv"
 	"strings"
 	"net/http"
@@ -22,7 +22,7 @@ func GoogleOAuth(c *gin.Context){
 	// Load .env file
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logger.Error().Err(errors.New("reading environment variables failed")).Msgf("%v",err)
 	}
 
 	redirectURL := os.Getenv("GOOGLE_OAUTH_REDIRECT_URL")
@@ -106,7 +106,7 @@ func GoogleOAuth(c *gin.Context){
 	// Load .env file
 	errr := godotenv.Load(".env")
 	if errr != nil {
-		log.Fatal("Error loading .env file")
+		logger.Error().Err(errors.New("reading environment variables failed")).Msgf("%v",err)
 	}
 
 	TOKEN_EXPIRES_IN, err := time.ParseDuration(os.Getenv("TOKEN_EXPIRES_IN"))

@@ -2,16 +2,20 @@ package controllers
 
 import (
 	"os"
-	"log"
+	"errors"
 	"strings"
 	"net/http"
 	"api/utils"
 	"api/models"
 	util "api/utils/mail"
+	"github.com/rs/zerolog"
 	"github.com/jinzhu/gorm"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
+
+// Define Logger Instance
+var logger = zerolog.New(os.Stdout).Level(zerolog.InfoLevel).With().Timestamp().Caller().Logger()
 
 // Request for reset token
 func ForgotPassword(c *gin.Context) {
@@ -56,7 +60,7 @@ func ForgotPassword(c *gin.Context) {
 	// Load .env file
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logger.Error().Err(errors.New("reading environment variables failed")).Msgf("%v",err)
 	}
 
 	// Generate password reset Code

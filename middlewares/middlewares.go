@@ -1,17 +1,20 @@
 package middleware
 
 import (
-	"api/models"
-	tokens "api/utils/token"
-	"fmt"
-	"log"
-	"net/http"
 	"os"
+	"fmt"
+	"errors"
 	"strings"
-
+	"net/http"
+	"api/models"
+	"github.com/rs/zerolog"
+	tokens "api/utils/token"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
+
+// Define Logger Instance
+var logger = zerolog.New(os.Stdout).Level(zerolog.InfoLevel).With().Timestamp().Caller().Logger()
 
 func DeserializeUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -35,7 +38,7 @@ func DeserializeUser() gin.HandlerFunc {
 		// Load .env file
 		errr := godotenv.Load(".env")
 		if errr != nil {
-			log.Fatal("Error loading .env file")
+			logger.Error().Err(errors.New("reading environment variables failed")).Msgf("%v",errr)
 		}
 
 		sub, err := tokens.ValidateToken(token, os.Getenv("TOKEN_SECRET"))
@@ -84,7 +87,7 @@ func DeserializeAdmin() gin.HandlerFunc {
 		// Load .env file
 		errr := godotenv.Load(".env")
 		if errr != nil {
-			log.Fatal("Error loading .env file")
+			logger.Error().Err(errors.New("reading environment variables failed")).Msgf("%v",errr)
 		}
 
 		sub, err := tokens.ValidateToken(token, os.Getenv("TOKEN_SECRET"))

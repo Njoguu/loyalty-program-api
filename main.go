@@ -33,6 +33,9 @@ func main(){
 
 	Server.Use(cors.New(corsConfig))
 
+	// Use Logging middleware
+	Server.Use(middleware.RequestLogger())
+
 	// Group endpoints
 	public := Server.Group("/api/auth")
 	protected := Server.Group("/api/users")

@@ -12,16 +12,17 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
 	"time"
-
+	"github.com/rs/zerolog"
 	"github.com/joho/godotenv"
 )
 
+// Define Logger Instance
+var logger = zerolog.New(os.Stdout).Level(zerolog.InfoLevel).With().Timestamp().Caller().Logger()
 
 type GoogleOAuthToken struct{
 	Access_token string
@@ -48,7 +49,7 @@ func GetGoogleOAuthToken(code string) (*GoogleOAuthToken, error) {
 	// Load .env file
 	err := godotenv.Load(".env")
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		logger.Error().Err(errors.New("reading environment variables failed")).Msgf("%v",err)
 	}
 
 	values := url.Values{}
