@@ -31,6 +31,7 @@ services:
       - loyalty_program_network
     depends_on:
       - db
+      - redis
 
   ### ===================
   ### DB SERVICE
@@ -54,6 +55,8 @@ services:
         rmdir /tmp/healthcheck
         cls
       timeout: 60ms
+    env_file:
+      - .env
     environment:
       - POSTGRES_DB=${PG_DB}
       - POSTGRES_USER=${PG_USER}
@@ -61,10 +64,23 @@ services:
     ports:
       - 5430:5432
     volumes:
-      - pg-data:/var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/data
     networks:
       - loyalty_program_network
   
+  ### ===================
+  ### CACHE SERVICE
+  ### ===================
+  redis: 
+    image: redis:7.2-rc2-alpine
+    container_name: api_redis
+    ports:
+      -6379:6379
+    restart: always
+    networks:
+      - loyalty_program_network
+
+
   ### ===================
   ### ADMINER SERVICE
   ### ===================
@@ -88,7 +104,7 @@ services:
         cls
       timeout: 60ms
     ports:
-      - 8000:8000
+      - 8080:8080
     networks:
       - loyalty_program_network
 
@@ -102,3 +118,4 @@ volumes:
 ### ===================================
 networks:
   loyalty_program_network:
+    driver: bridge
