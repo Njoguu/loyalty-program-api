@@ -1,10 +1,38 @@
 # Variables
-APP_NAME=loyalty-program-api
+APP_NAME=main
+
+DB_USER ?= root
+DB_PASSWORD ?= secret
+DB_NAME ?= LoyaltyPointsDB
+DB_ADDRESS ?= localhost
+DB_PORT ?= 5432
+DB_OWNER ?= root
+
+DB_CONN = postgresql://$(DB_USER):$(DB_PASSWORD)@($(DB_HOST):$(DB_PORT)\)/$(DB_NAME)?sslmode=disable
+
+CONTAINER_NAME ?= postgresdb
+IMAGE ?= postgres:15.3-alpine3.18
+
+MIGRATION_EXT ?= "sql"
+MIGRATION_DIR ?= "db/migrations"
+
 
 #================================
 #== DOCKER Targets
 #================================
 COMPOSE := @docker-compose
+
+create-migrations: 
+	migrate create -ext $(MIGRATION_EXT) -dir $(MIGRATION_DIR)
+
+postgres:
+	docker run --name $(CONTAINER_NAME) -p $(DB_PORT):$5432 -e POSTGRES_USER=$(DB_USER) -e POSTGRES_PASSWORD=$(DB_PASSWORD) -d $(IMAGE)
+
+createdb:
+	docker exec -it $(CONTAINER_NAME) createdb --username=$(DB_USER) --owner=$(DB_OWNER) $(DB_NAME)
+	
+dropdb: 
+	docker exec -it $(CONTAINER_NAME) dropdb $(DB_NAME)
 
 dcb:
 	${COMPOSE} build
@@ -34,3 +62,14 @@ build:
 
 migratedb:
 	${GO} run migrate/migrate.go
+
+#================================
+#== DB MIGRATION Targets
+#================================
+migrateup:
+	migrate -path $(MIGRATION_DIR) -database $(DB_CONN) -verbose up
+
+migratedown:
+	migrate -path $(MIGRATION_DIR) -database $(DB_CONN) -verbose down
+
+.PHONY: createdb postgres dropdb migrateup migratedown
