@@ -65,6 +65,7 @@ The project follows the following directory structure:
 │   ├── index.html
 │   ├── points.apib
 │   ├── products.apib
+│   ├── reset-password.apib
 │   └── transaction-history.apib
 ├── middlewares
 │   └── caching.go
