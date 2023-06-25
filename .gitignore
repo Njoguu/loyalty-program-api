@@ -22,3 +22,6 @@ go.work
 
 # Secret files
 .env
+
+# Data
+pgdata

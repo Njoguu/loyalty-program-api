@@ -1,121 +1,39 @@
-version: '3.8'
+version: '3.9'
 services:
-  # ===========
-  # API SERVICE
-  # ===========
-  api:
-    container_name: api
-    restart: always
-    build: .
-    healthcheck:
-      interval: 120ms
-      retries: 5
-      start_period: 60ms
-      test: |
-        touch /tmp/healthcheck.txt &&
-        mkdir /tmp/healthcheck &&
-        mv /tmp/healthcheck.txt /tmp/healthcheck &&
-        cd /tmp/healthcheck &&
-        echo "hello my docker container is working fine" >> healthcheck.txt &&
-        cat healthcheck.txt &&
-        rm healthcheck.txt &&
-        cd .. &&
-        rmdir /tmp/healthcheck
-        cls
-      timeout: 60ms
-    env_file:
-      - .env
-    ports:
-      - 8000:8000
-    networks:
-      - loyalty_program_network
-    depends_on:
-      - db
-      - redis
-
   ### ===================
   ### DB SERVICE
   ### ===================
-  db:
+  postgres:
     image: postgres:15.3-alpine3.18
-    restart: always
-    healthcheck:
-      interval: 120ms
-      retries: 5
-      start_period: 60ms
-      test: |
-        touch /tmp/healthcheck.txt &&
-        mkdir /tmp/healthcheck &&
-        mv /tmp/healthcheck.txt /tmp/healthcheck &&
-        cd /tmp/healthcheck &&
-        echo "hello my docker container is working fine" >> healthcheck.txt &&
-        cat healthcheck.txt &&
-        rm healthcheck.txt &&
-        cd .. &&
-        rmdir /tmp/healthcheck
-        cls
-      timeout: 60ms
     env_file:
       - .env
     environment:
       - POSTGRES_DB=${PG_DB}
       - POSTGRES_USER=${PG_USER}
       - POSTGRES_PASSWORD=${PG_PASSWORD}
+
+  # ===========
+  # API SERVICE
+  # ===========
+  api:
+    container_name: api
+    build: 
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - 5430:5432
-    volumes:
-      - ./pgdata:/var/lib/postgresql/data
-    networks:
-      - loyalty_program_network
-  
+      - 8000:8000
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+      - redis
+    entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh"]
+    command: [ "/app/main" ]
+
   ### ===================
   ### CACHE SERVICE
   ### ===================
   redis: 
     image: redis:7.2-rc2-alpine
-    container_name: api_redis
     ports:
-      -6379:6379
-    restart: always
-    networks:
-      - loyalty_program_network
-
-
-  ### ===================
-  ### ADMINER SERVICE
-  ### ===================
-  panel:
-    image: adminer:latest
-    restart: always
-    healthcheck:
-      interval: 120ms
-      retries: 5
-      start_period: 60ms
-      test: |
-        touch /tmp/healthcheck.txt &&
-        mkdir /tmp/healthcheck &&
-        mv /tmp/healthcheck.txt /tmp/healthcheck &&
-        cd /tmp/healthcheck &&
-        echo "hello my docker container is working fine" >> healthcheck.txt &&
-        cat healthcheck.txt &&
-        rm healthcheck.txt &&
-        cd .. &&
-        rmdir /tmp/healthcheck
-        cls
-      timeout: 60ms
-    ports:
-      - 8080:8080
-    networks:
-      - loyalty_program_network
-
-### ========================
-### VOLUMES PERSISTENT DATA
-### ========================
-volumes:
-  pg-data:
-### ===================================
-### NETWORKS GROUP FOR ONE SAME SERVICE
-### ===================================
-networks:
-  loyalty_program_network:
-    driver: bridge
+      - 6379:6379
