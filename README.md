@@ -12,7 +12,7 @@
 This is a loyalty points API built with GO and the Gin web framework. The API allows customers to earn points for purchases, and redeem those points for rewards.
 
 ## Requirements
-- GO (version 1.17 or higher)
+- GO (version 1.18 or higher)
 
 ## Supported databases
 - PostgreSQL
@@ -23,10 +23,10 @@ The API has put in place the following features:
 - [x] Built on top of [Gin](https://github.com/gin-gonic/gin)
 - [x] Uses the supported database without writing any extra configuration files
 - [x] Reading Environment variables using [godotenv](https://github.com/joho/godotenv)
-- [ ] Caching responses
+- [x] Caching responses
 - [ ] Logging
 - [ ] Follows CORS policy
-- [ ] DB Migration Support
+- [x] DB Migration Support
 - [ ] Comprehensive Error Handling in API Services
 - [x] Basic auth
 - [x] Password hashing with `bcrypt`
@@ -34,10 +34,10 @@ The API has put in place the following features:
 - [ ] Webhook Integration for Real-time Deployment Status Notifications
 - [ ] Request data validation
 - [x] Email verification (sending verification email)
-- [ ] Forgot password recovery
+- [x] Forgot password recovery
 - [x] Render `HTML` templates
 - [ ] Forward error logs and crash reports.
-- [ ] User logout (Send an expired cookie to user’s browser or client which invalidates the user’s ‘session’)
+- [x] User logout (Send an expired cookie to user’s browser or client which invalidates the user’s ‘session’)
 
 ## Project Structure
 The project follows the following directory structure:
@@ -49,9 +49,14 @@ The project follows the following directory structure:
 │   │   └── admin-endpoints.go
 │   ├── get-products.go
 │   ├── googleauth.go
+│   ├── pass-reset-controller.go
 │   ├── points.go
 │   ├── transactions-history.go
 │   └── user-auth.go
+├── db
+│   ├── migrations
+│   │   ├── 000001_init_schema.down.sql
+│   │   └── 000001_init_schema.up.sql
 ├── docs
 │   ├── admins
 │   │   └── admins.apib
@@ -60,8 +65,11 @@ The project follows the following directory structure:
 │   ├── index.html
 │   ├── points.apib
 │   ├── products.apib
+│   ├── reset-password.apib
 │   └── transaction-history.apib
 ├── middlewares
+│   └── caching.go
+│   ├── logger.go
 │   └── middlewares.go
 ├── migrate
 │   └── migrate.go
@@ -72,6 +80,8 @@ The project follows the following directory structure:
 │   ├── transactions.go
 │   └── user.go
 ├── templates
+│   ├── base.html
+│   ├── passwordReset.html
 │   ├── styles.html
 │   ├── templates.html
 │   └── verificationCode.html
@@ -140,28 +150,56 @@ Docker Compose will build and start the Loyalty Program API, along with the requ
   $ go build -o loyalty-program-api || make build
   ```
 
-  - Start application in development
+  - Start application server in development
 
   ```sh
   $ go run main.go | make start
   ```
 
 * ##### Docker Lifecycle
+  - Start postgres container:
+  
+  ```sh
+  $ make postgres
+  ```
+  
+  - Create simple_bank database:
+    
+  ```sh
+  $ make createdb
+  ```
+  - Create a new db migration:
 
+  ```sh
+  $ make create-migrations
+  ```
+
+  - Run db migration up all versions:
+  
+  ```sh
+  $ make migrateup
+  ```
+  
+  - Run db migration down all versions:
+
+  ```sh
+  $ make migratedown
+  ```
+    
   - Build container
-
+  
   ```sh
   $ docker-compose build | make dcb
   ```
   
   - Run container
-
+  
   ```sh
   $ docker-compose up -d --build | make dcu
   ```
-
+  
   - Stop container
-
+  
   ```sh
   $ docker-compose down | make dcd
   ```
