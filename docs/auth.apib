@@ -25,6 +25,10 @@
     + city: Nairobi (required ) - The user's city
     + card_number: 0123456789012 (required) - The user's virtual card number
 
+### UpdatePasswordData
++ new_password: yournewpassword (required)
++ confirm_password: yournewpassword (required)
+
 # Group Membership Service
 Loyalty Program Membership Service endpoints
 
@@ -164,3 +168,42 @@ Retrieve the currently logged-in user’s information.
     + Attributes
         + status: fail (required)
         + message: "You are not logged in"
+
+## Change User Product [/api/users/me/change-password]
+
+### Change Password [PATCH]
+Update the logged in user's password
+
++ Request
+
+    + Headers
+
+        Content-Type: application/json
+        Cookie: token=<token-value>
+        Authorization: Bearer <jwt>
+
+    + Attributes(UpdatePasswordData)
+
++ Response 200 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + message: Password change successful (required)
+
++ Response 400
+
+    + Attributes
+        + status: error (required)
+        + message: Passwords do not match
+
++ Response 401
+
+    + Attributes
+        + status: fail (required)
+        + message: You are not logged in
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: Failed to udpate password
