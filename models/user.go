@@ -26,14 +26,14 @@ type User struct {
 
 // User Creation Request Data
 type CreateUserInput struct {
-    Username string `json:"username" binding:"required"`
-    FirstName string `json:"firstname" binding:"required"`
-    LastName string `json:"lastname" binding:"required"`
-    Gender string `json:"gender" binding:"required"`
-    EmailAddress string `json:"email" binding:"required"`
-    Password string `json:"password" binding:"required"`
-    City string `json:"city" binding:"required"`
-    PhoneNumber string `json:"phone_number" binding:"required"`    
+    Username string `json:"username" validate:"required"`
+    FirstName string `json:"firstname" validate:"required"`
+    LastName string `json:"lastname" validate:"required"`
+    Gender string `json:"gender" validate:"required"`
+    EmailAddress string `json:"email" validate:"required,email"`
+    Password string `json:"password" validate:"required"`
+    City string `json:"city" validate:"required"`
+    PhoneNumber string `json:"phone_number" validate:"required"`    
 }
 
 type VerifyEmails struct {
@@ -56,8 +56,8 @@ type PasswordReset struct{
 
 // User Login Request data
 type LoginInput struct {
-	EmailAddress    string `json:"email"  binding:"required"`
-	Password string `json:"password"  binding:"required"`
+	EmailAddress    string `json:"email"  validate:"required"`
+	Password string `json:"password"  validate:"required"`
 }
 
 // User Data Response
@@ -74,13 +74,13 @@ type UserResponse struct {
 
 // ForgotPasswordInput
 type ForgotPasswordInput struct{
-    EmailAddress string `json:"email" binding:"required"`
+    EmailAddress string `json:"email" validate:"required, email"`
 }
 
 // ResetPasswordInput
 type ResetPasswordInput struct{
-    NewPassword string  `json:"new_password" binding:"required"`
-    ConfirmPassword string  `json:"confirm_password" binding:"required"`
+    NewPassword string  `json:"new_password" validate:"required"`
+    ConfirmPassword string  `json:"confirm_password" validate:"required"`
 }
 
 
