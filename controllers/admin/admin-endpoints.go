@@ -99,7 +99,7 @@ func DeleteProduct(c *gin.Context){
             })
         } else {
             c.IndentedJSON(http.StatusInternalServerError, gin.H{
-                "status":  "fail",
+                "status":  "err",
                 "message": "Failed to delete product",
             })
         }
@@ -114,7 +114,7 @@ func DeleteProduct(c *gin.Context){
 		return
 	}
 	
-	c.IndentedJSON(http.StatusOK, gin.H{
+	c.IndentedJSON(http.StatusNoContent, gin.H{
 		"status": "success",
 		"message": "Product deleted successfully",
 	})
