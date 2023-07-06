@@ -1,5 +1,5 @@
 CREATE TABLE admins (
-    id integer NOT NULL,
+    id SERIAL NOT NULL,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
     deleted_at timestamp with time zone,
@@ -9,7 +9,7 @@ CREATE TABLE admins (
 );
 
 CREATE TABLE password_resets (
-    id integer NOT NULL,
+    id SERIAL NOT NULL,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
     deleted_at timestamp with time zone,
@@ -20,7 +20,7 @@ CREATE TABLE password_resets (
 );
 
 CREATE TABLE products (
-    id integer NOT NULL,
+    id SERIAL NOT NULL,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
     deleted_at timestamp with time zone,
@@ -31,7 +31,7 @@ CREATE TABLE products (
 );
 
 CREATE TABLE transactions (
-    id integer NOT NULL,
+    id SERIAL NOT NULL,
     username text,
     points integer,
     state text,
@@ -42,7 +42,7 @@ CREATE TABLE transactions (
 );
 
 CREATE TABLE users (
-    id integer NOT NULL,
+    id SERIAL NOT NULL,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
     deleted_at timestamp with time zone,
@@ -60,7 +60,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE verify_emails (
-    id integer NOT NULL,
+    id SERIAL NOT NULL,
     created_at timestamp with time zone,
     updated_at timestamp with time zone,
     deleted_at timestamp with time zone,
