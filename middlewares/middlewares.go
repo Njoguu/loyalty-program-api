@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"api/models"
 	"github.com/rs/zerolog"
+	"golang.org/x/time/rate"
 	tokens "api/utils/token"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -110,6 +111,23 @@ func DeserializeAdmin() gin.HandlerFunc {
 		}
 
 		c.Set("currentUser", admin)
+		c.Next()
+	}
+}
+
+// middleware to limit requests 
+func RateLimiter() gin.HandlerFunc {
+	limit := rate.NewLimiter(2,4)
+	return func(c *gin.Context){
+		if !limit.Allow() {
+			c.IndentedJSON(http.StatusTooManyRequests, gin.H{
+				"status": "error",
+				"message": "rate limit exceeded",
+			})
+			c.Abort() // Abort the request to prevent it from proceeding further
+			return
+		}
+		// If rate is not exceeded, continue to next handler
 		c.Next()
 	}
 }

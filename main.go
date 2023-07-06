@@ -27,14 +27,20 @@ func init(){
 }
 
 func main(){
+
+	// CORS Setup
 	corsConfig := cors.DefaultConfig()
 	corsConfig.AllowOrigins = []string{"http://localhost:3000"}
 	corsConfig.AllowCredentials = true
 
+	// Use CORS Middleware
 	Server.Use(cors.New(corsConfig))
 
 	// Use Logging middleware
 	Server.Use(middleware.RequestLogger())
+
+	// Use Rate Limiting middleware
+	Server.Use(middleware.RateLimiter())
 
 	// Group endpoints
 	public := Server.Group("/api/auth")
@@ -43,8 +49,8 @@ func main(){
 	admins_protected := Server.Group("/api/admin") 
 
 	// Test API works
-	Server.GET("/ping", func(c *gin.Context){
-		c.JSON(http.StatusOK, gin.H{
+	Server.GET("/api/ping", func(c *gin.Context){
+		c.IndentedJSON(http.StatusOK, gin.H{
 			"message": "pong",
 		})
 	})
