@@ -60,10 +60,10 @@ func CreateAccount(c *gin.Context){
 
 	_,errr := user.SaveUser()
 
-	if errr != nil && strings.Contains(err.Error(), "duplicate key value violates unique") {
+	if errr != nil && strings.Contains(errr.Error(), "pq: duplicate key value violates unique constraint") {
 		c.IndentedJSON(http.StatusConflict, gin.H{
 			"status": "fail", 
-			"message": "User with that credential already exists",
+			"message": "user with that credential already exists",
 		})
 		return
 	} 
@@ -177,7 +177,7 @@ func Login(c *gin.Context) {
 	var user models.User
 	result := models.DB.First(&user, "email_address = ?", strings.ToLower(input.EmailAddress))
 	if result.Error != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
 			"status": "fail",
 			"message": "Invalid email or Password",
 		})
@@ -186,13 +186,13 @@ func Login(c *gin.Context) {
 
 	// Check if User is verified
 	if !user.IsEmailVerified {
-		c.JSON(http.StatusForbidden, gin.H{"status": "fail", "message": "Please verify your email"})
+		c.IndentedJSON(http.StatusForbidden, gin.H{"status": "fail", "message": "Please verify your email"})
 		return
 	}
 
 	// Verify password given
 	if err := models.VerifyPassword(user.Password, input.Password); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Invalid email or Password"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Invalid Password"})
 		return
 	}
 
@@ -220,7 +220,7 @@ func Login(c *gin.Context) {
 	token, err := token.GenerateToken(TOKEN_EXPIRES_IN, user.ID, os.Getenv("TOKEN_SECRET"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"status": "fail",
+			"status": "error",
 			"message": err.Error(),
 		})
 		return

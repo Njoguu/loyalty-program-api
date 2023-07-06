@@ -90,9 +90,10 @@ func (user *User) SaveUser() (*User, error){
 
 	var err error = DB.Create(&user).Error
 	if err != nil {
-		return &User{}, err
+        logger.Error().Err(errors.New("saving user to database failed")).Msgf("%v",err)
+		return nil, err
 	}
-	return user, nil
+	return &User{}, nil
 }
 
 // Verify password hash and password given are identical
