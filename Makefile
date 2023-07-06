@@ -8,7 +8,7 @@ DB_ADDRESS ?= localhost
 DB_PORT ?= 5432
 DB_OWNER ?= root
 
-DB_CONN = postgresql://$(DB_USER):$(DB_PASSWORD)@($(DB_HOST):$(DB_PORT)\)/$(DB_NAME)?sslmode=disable
+DB_CONN = postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable
 
 CONTAINER_NAME ?= postgresdb
 IMAGE ?= postgres:15.3-alpine3.18
@@ -21,9 +21,6 @@ MIGRATION_DIR ?= "db/migrations"
 #== DOCKER Targets
 #================================
 COMPOSE := @docker-compose
-
-create-migrations: 
-	migrate create -ext $(MIGRATION_EXT) -dir $(MIGRATION_DIR)
 
 postgres:
 	docker run --name $(CONTAINER_NAME) -p $(DB_PORT):$5432 -e POSTGRES_USER=$(DB_USER) -e POSTGRES_PASSWORD=$(DB_PASSWORD) -d $(IMAGE)
@@ -66,10 +63,19 @@ migratedb:
 #================================
 #== DB MIGRATION Targets
 #================================
+create-migrations: 
+	migrate create -ext $(MIGRATION_EXT) -dir $(MIGRATION_DIR) -seq $(NAME)
+
 migrateup:
-	migrate -path $(MIGRATION_DIR) -database $(DB_CONN) -verbose up
+	migrate -path $(MIGRATION_DIR) -database "$(DB_CONN)" -verbose up
 
 migratedown:
-	migrate -path $(MIGRATION_DIR) -database $(DB_CONN) -verbose down
+	migrate -path $(MIGRATION_DIR) -database "$(DB_CONN)" -verbose down
+
+migrateup1:
+	migrate -path $(MIGRATION_DIR) -database "$(DB_CONN)" -verbose up 1
+
+migratedown1:
+	migrate -path $(MIGRATION_DIR) -database "$(DB_CONN)" -verbose down 1
 
 .PHONY: createdb postgres dropdb migrateup migratedown
