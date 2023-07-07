@@ -192,8 +192,6 @@ func ResetPassword(c *gin.Context) {
 	user.Password = hashedPassword
 	updatedUser.PasswordResetCode = ""
 
-	models.DB.Save(&user)
-	// TODO: Test if user is saved twice
 	if err := models.DB.Save(&user).Error; err != nil{
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{
 			"status": "error",
@@ -201,8 +199,6 @@ func ResetPassword(c *gin.Context) {
 		})
 	}
 	
-	models.DB.Save(&updatedUser)
-
 	if err := models.DB.Save(&updatedUser).Error; err != nil{
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{
 			"status": "error",
