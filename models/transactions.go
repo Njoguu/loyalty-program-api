@@ -25,7 +25,7 @@ func SaveToTransactions(
     state string, 
     description string, 
     points int,
-    redeemed_product string){
+    redeemed_product string) error{
 
         var transaction Transactions
         currentTime := TIME.Now()
@@ -34,12 +34,12 @@ func SaveToTransactions(
         transaction.Points = points
         transaction.State = state
         transaction.Description = description
-        transaction.Date = currentTime.Format("01-02-2006") // TODO: convert to string
-        // TODO: Get current time
+        transaction.Date = currentTime.Format("01-02-2006") 
         transaction.Time = currentTime.Format("15:04:05")
         transaction.Product = redeemed_product
         
-       if err := DB.Create(&transaction).Error; err != nil{
-        logger.Error().Err(errors.New("saving transaction to db failed")).Msgf("%v",err)
-       }
+        if err := DB.Create(&transaction).Error; err != nil{
+            logger.Error().Err(errors.New("saving transaction to db failed")).Msgf("%v",err)
+        }
+        return nil
 }
