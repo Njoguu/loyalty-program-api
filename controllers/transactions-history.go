@@ -6,8 +6,8 @@ member transaction history data.
 package controllers
 
 import (
-	"fmt"
 	"time"
+	"errors"
     "net/http"
 	models "api/models"
 	"github.com/jinzhu/gorm"
@@ -26,12 +26,12 @@ func ViewTransactions(c *gin.Context){
 		if err == gorm.ErrRecordNotFound {
             c.IndentedJSON(http.StatusNotFound, gin.H{
                 "status":  "fail",
-                "message": "Transactions not found",
+                "message": "transactions not found",
             })
         } else {
             c.IndentedJSON(http.StatusInternalServerError, gin.H{
-                "status":  "fail",
-                "message": "Failed to retrieve transactions",
+                "status":  "error",
+                "message": "failed to retrieve transactions",
             })
         }
         return
@@ -41,7 +41,7 @@ func ViewTransactions(c *gin.Context){
 	for i := range userTransactions {
 		parsedDate, err := time.Parse(time.RFC3339, userTransactions[i].Date)
 		if err != nil {
-			fmt.Println("Error parsing date:", err)
+			logger.Error().Err(errors.New("error parsing date")).Msgf("%v",err)
 			return
 		}
 		userTransactions[i].Date = parsedDate.Format("January 2, 2006")
@@ -49,7 +49,7 @@ func ViewTransactions(c *gin.Context){
 		// time field is in "2006-01-02T15:04:05Z" format
 		parsedTime, err := time.Parse("2006-01-02T15:04:05Z", userTransactions[i].Time)
 		if err != nil {
-			fmt.Println("Error parsing time:", err)
+			logger.Error().Err(errors.New("error parsing time")).Msgf("%v",err)
 			return
 		}
 		userTransactions[i].Time = parsedTime.Format("15:04:05")
@@ -61,7 +61,7 @@ func ViewTransactions(c *gin.Context){
 		"status": "success",
 		"message": "Transaction History Retrieval successful!",
 		"data": gin.H{
-			"transactions": userTransactions,	// TODO: Return all Transactions as List
+			"transactions": userTransactions,
 		},
 	})
 }

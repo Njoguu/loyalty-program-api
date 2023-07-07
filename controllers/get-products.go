@@ -22,12 +22,12 @@ func GetProducts(c *gin.Context) {
 		if err == gorm.ErrRecordNotFound {
             c.IndentedJSON(http.StatusNotFound, gin.H{
                 "status":  "fail",
-                "message": "Products not found",
+                "message": "products not found",
             })
         } else {
             c.IndentedJSON(http.StatusInternalServerError, gin.H{
                 "status":  "fail",
-                "message": "Failed to retrieve products",
+                "message": "failed to retrieve products",
             })
         }
         return
@@ -44,7 +44,7 @@ func GetProducts(c *gin.Context) {
 	
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"status": "success",
-		"message": "Products Retrieval successful!",
+		"message": "products retrieval successful",
 		"data": gin.H{
 			"products": publicProducts,
 		},

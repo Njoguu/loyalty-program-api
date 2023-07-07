@@ -16,6 +16,7 @@ import (
 	models "api/models"
 	mail "api/utils/mail"
 	token "api/utils/token"
+	"github.com/jinzhu/gorm"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/thanhpk/randstr"
@@ -29,7 +30,7 @@ func CreateAccount(c *gin.Context){
 
 	if err := c.ShouldBindJSON(&input); err != nil{
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"status": "fail",
+			"status": "error",
 			"error": err.Error(),
 		})
 		return
@@ -66,7 +67,13 @@ func CreateAccount(c *gin.Context){
 			"message": "user with that credential already exists",
 		})
 		return
-	} 
+	} else if errr != nil{
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"message": errr.Error(),
+		})
+		return
+	}
 
 	// Generate Verification Code
 	code := randstr.String(20)
@@ -78,7 +85,14 @@ func CreateAccount(c *gin.Context){
 	verifyEmails.Username = user.Username
 	verifyEmails.EmailAddress = user.EmailAddress
 	verifyEmails.SecretCode = verification_code
-	models.DB.Save(&verifyEmails)
+
+	// Save fields to Verify Emails DB
+	if err = models.DB.Save(&verifyEmails).Error; err != nil{
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"message": err.Error(),
+		})
+	} 
 
 	var firstName = user.FirstName
 
@@ -87,7 +101,12 @@ func CreateAccount(c *gin.Context){
 	}
 
 	// Save to Transactions Table
-	models.SaveToTransactions(user.Username, "EARN", "WELCOME BONUS", 150, "")
+	if err := models.SaveToTransactions(user.Username, "EARN", "WELCOME BONUS", 150, ""); err != nil{
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"message": err.Error(),
+		})
+	}
 
 	// ? Send Email
 	emailData := mail.EmailData{
@@ -96,7 +115,7 @@ func CreateAccount(c *gin.Context){
 		Subject:   "Your account verification code",
 	}
 
-	mail.SendEmail(&user, &emailData, "verificationCode.html")
+	mail.SendEmail(&user, &emailData, "verificationCode.html") // TODO: Error Handle
 
 	message := "We sent an email with a verification code to " + user.EmailAddress
 
@@ -115,30 +134,32 @@ func  VerifyEmail(c *gin.Context) {
 	var updatedUser models.VerifyEmails
 	var user models.User
 
-	result := models.DB.First(&updatedUser, "secret_code = ?", verification_code)
+	result := models.DB.First(&updatedUser, "secret_code = ?", verification_code) 
 	
+	// Get user from Database
 	res := models.DB.First(&user, "username = ?", updatedUser.Username)
 
-	if res.Error != nil{
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"status": "fail", "message": 
-			"Invalid verification code or user doesn't exist",
-		})
-		return
-	}
-
-	if result.Error != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
+	if res.Error == gorm.ErrRecordNotFound{
+		c.IndentedJSON(http.StatusNotFound, gin.H{
 			"status": "fail", 
-			"message": "Invalid verification code or user doesn't exist",
+			"message": "user does not exist",
 		})
 		return
 	}
 
+	if result.Error == gorm.ErrRecordNotFound {
+		c.IndentedJSON(http.StatusNotFound, gin.H{
+			"status": "fail", 
+			"message": "invalid verification code or code does not exist",
+		})
+		return
+	}
+
+	// Check if account email is already verified
 	if user.IsEmailVerified {
 		c.IndentedJSON(http.StatusConflict, gin.H{
 			"status": "fail",
-			"message": "User already verified",
+			"message": "user already verified",
 		})
 		return
 	}
@@ -147,15 +168,31 @@ func  VerifyEmail(c *gin.Context) {
 	updatedUser.SecretCode = ""
 	user.RedeemablePoints = user.RedeemablePoints + 350		// Allocate 350 points on email verfification
 
-	models.DB.Save(&user)
-	models.DB.Save(&updatedUser)
+	if err := models.DB.Save(&user).Error; err != nil{
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"message": err.Error(),
+		})
+	}
+
+	if err := models.DB.Save(&updatedUser).Error; err != nil{
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"message": err.Error(),
+		})
+	} 
 
 	// Save to Transactions Table
-	models.SaveToTransactions(user.Username, "EARN", "CONFIRM EMAIL ADDRESS BONUS", 350, "")
+	if err := models.SaveToTransactions(user.Username, "EARN", "CONFIRM EMAIL ADDRESS BONUS", 350, ""); err != nil{
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"message": err.Error(),
+		})
+	}
 
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"status": "success",
-		"message": "Email verified successfully",
+		"message": "email verified successfully",
 	})
 }
 
@@ -176,23 +213,34 @@ func Login(c *gin.Context) {
 	// Get User data of user logging in
 	var user models.User
 	result := models.DB.First(&user, "email_address = ?", strings.ToLower(input.EmailAddress))
-	if result.Error != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
+	if result.Error != nil && result.Error == gorm.ErrRecordNotFound {
+		c.IndentedJSON(http.StatusNotFound, gin.H{
 			"status": "fail",
-			"message": "Invalid email or Password",
+			"message": "account with that email does not exist",
 		})
 		return
+	}else if result.Error != nil{
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"message": result.Error,
+		})
 	}
 
 	// Check if User is verified
 	if !user.IsEmailVerified {
-		c.IndentedJSON(http.StatusForbidden, gin.H{"status": "fail", "message": "Please verify your email"})
+		c.IndentedJSON(http.StatusForbidden, gin.H{
+			"status": "fail",
+			"message": "please verify your email",
+		})
 		return
 	}
 
 	// Verify password given
 	if err := models.VerifyPassword(user.Password, input.Password); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"status": "fail", "message": "Invalid Password"})
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
+			"status": "fail",
+			"message": "invalid password",
+		})
 		return
 	}
 
@@ -219,7 +267,7 @@ func Login(c *gin.Context) {
 	// Generate Token
 	token, err := token.GenerateToken(TOKEN_EXPIRES_IN, user.ID, os.Getenv("TOKEN_SECRET"))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
 			"status": "error",
 			"message": err.Error(),
 		})
@@ -228,7 +276,7 @@ func Login(c *gin.Context) {
 
 	c.SetCookie("token", token, TOKEN_MAXAGE*60, "/", "localhost", false, true)
 
-	c.JSON(http.StatusOK, gin.H{
+	c.IndentedJSON(http.StatusOK, gin.H{
 		"status": "success",
 		"token": token,
 	})
@@ -237,9 +285,9 @@ func Login(c *gin.Context) {
 // logout user
 func Logout(c *gin.Context) {
 	c.SetCookie("token", "", -1, "/", "localhost", false, true)
-	c.JSON(http.StatusOK, gin.H{
+	c.IndentedJSON(http.StatusOK, gin.H{
 		"status": "success",
-		"message": "You have been logged out!",
+		"message": "you have been logged out",
 	})
 }
 
@@ -288,8 +336,8 @@ func ChangePassword(c *gin.Context){
 	// Check if the new password and confirm password match
 	if passwordReset.NewPassword != passwordReset.ConfirmPassword {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"status": "error",
-			"message": "Passwords do not match",
+			"status": "fail",
+			"message": "passwords do not match",
 		})
 		return
 	}
@@ -298,8 +346,8 @@ func ChangePassword(c *gin.Context){
 	hashedPassword, err := models.HashPassword(passwordReset.NewPassword)
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{
-			"status": "error",
-			"message": "Failed to generate hashed password",
+			"status": "fail",
+			"message": "failed to generate hashed password",
 		})
 		return
 	}
@@ -309,7 +357,7 @@ func ChangePassword(c *gin.Context){
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{
 			"status": "error",
-			"message": "Failed to update password",
+			"message": "failed to update password",
 		})
 		return
 	}
@@ -317,6 +365,6 @@ func ChangePassword(c *gin.Context){
 	// Password reset successful
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"status": "success",
-		"message": "Password change successful",
+		"message": "password change successful",
 	})
 }

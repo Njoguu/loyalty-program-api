@@ -31,12 +31,12 @@ func RedeemPoints(c *gin.Context){
         if err == gorm.ErrRecordNotFound {
             c.IndentedJSON(http.StatusNotFound, gin.H{
                 "status":  "fail",
-                "message": "Product not found",
+                "message": "product not found",
             })
         } else {
             c.IndentedJSON(http.StatusInternalServerError, gin.H{
-                "status":  "fail",
-                "message": "Failed to retrieve product",
+                "status":  "error",
+                "message": "failed to retrieve product",
             })
         }
         return
@@ -48,8 +48,8 @@ func RedeemPoints(c *gin.Context){
     if selectedProduct.Quantity < 0 {
         // Handle the error condition where the user tries to redeem more quantity than available
         c.IndentedJSON(http.StatusBadRequest, gin.H{
-            "status": "error",
-            "message": "Insufficient quantity available for redemption",
+            "status": "fail",
+            "message": "insufficient quantity available for redemption",
         })
         return
     }
@@ -62,7 +62,7 @@ func RedeemPoints(c *gin.Context){
     if  user.RedeemablePoints < totalPoints {
         c.IndentedJSON(http.StatusBadRequest, gin.H{
             "status": "fail",
-            "message": "Insufficient points",
+            "message": "insufficient points",
         })
         return
     }
@@ -72,14 +72,19 @@ func RedeemPoints(c *gin.Context){
 
     if err := models.DB.Save(&user).Error; err != nil {
         c.IndentedJSON(http.StatusInternalServerError, gin.H{
-            "status":  "fail",
-            "message": "Failed to deduct points",
+            "status":  "error",
+            "message": "failed to update points",
         })
         return
     }
 
     // Create a new transaction record
-    models.SaveToTransactions(user.Username, "REDEEM", "PRODUCT REDEMPTION",totalPoints, selectedProduct.Name)
+    if err := models.SaveToTransactions(user.Username, "REDEEM", "PRODUCT REDEMPTION",totalPoints, selectedProduct.Name); err != nil{
+        c.IndentedJSON(http.StatusInternalServerError, gin.H{
+            "status": "error",
+            "message": err.Error(),
+        })
+    }
 
     // Return the redeemed product and remaining points to the user
     c.IndentedJSON(http.StatusOK, gin.H{

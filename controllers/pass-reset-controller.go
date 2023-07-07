@@ -37,12 +37,12 @@ func ForgotPassword(c *gin.Context) {
 		if err == gorm.ErrRecordNotFound {
             c.IndentedJSON(http.StatusNotFound, gin.H{
                 "status":  "fail",
-                "message": "User not found",
+                "message": "user not found",
             })
         } else {
             c.IndentedJSON(http.StatusInternalServerError, gin.H{
-                "status":  "fail",
-                "message": "Failed to retrieve user",
+                "status":  "error",
+                "message": "failed to retrieve user",
             })
         }
         return
@@ -52,7 +52,7 @@ func ForgotPassword(c *gin.Context) {
 	if !user.IsEmailVerified {
 		c.IndentedJSON(http.StatusUnauthorized, gin.H{
 			"status": "fail",
-			"message": "Account not verified, please verify your email",
+			"message": "account not verified, please verify your email",
 		})
 		return
 	}
@@ -65,6 +65,12 @@ func ForgotPassword(c *gin.Context) {
 
 	// Generate password reset Code
 	resetToken, err := utils.GenerateRandomString(20)
+	if err != nil{
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"message": "could not generate password reset code",
+		})
+	}
 
 	// Encode generated reset code
 	passwordResetToken := util.Encode(resetToken)
@@ -74,7 +80,13 @@ func ForgotPassword(c *gin.Context) {
 	passwordReset.Username = user.Username
 	passwordReset.EmailAddress = user.EmailAddress
 	passwordReset.PasswordResetCode = passwordResetToken
-	models.DB.Save(&passwordReset) // -> Save data to DB
+
+	if err := models.DB.Save(&passwordReset).Error; err != nil{
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"message": "could not save password",
+		})
+	} // -> Save data to DB
 
 	if err != nil {
 		c.IndentedJSON(http.StatusForbidden, gin.H{
@@ -138,7 +150,7 @@ func ResetPassword(c *gin.Context) {
 	if userCredential.NewPassword != userCredential.ConfirmPassword {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
 			"status": "fail",
-			"message": "Passwords do not match",
+			"message": "passwords do not match",
 		})
 		return
 	}
@@ -156,18 +168,23 @@ func ResetPassword(c *gin.Context) {
 
 	res := models.DB.First(&user, "username = ?", updatedUser.Username)
 
-	if res.Error != nil{
-		c.IndentedJSON(http.StatusBadRequest, gin.H{
-			"status": "fail", "message": 
-			"Invalid verification code or user doesn't exist",
+	if res.Error != nil && res.Error == gorm.ErrRecordNotFound{
+		c.IndentedJSON(http.StatusNotFound, gin.H{
+			"status": "fail",
+			"message": "user does not exist",
 		})
 		return
+	} else if res.Error != nil{
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"message": res.Error,
+		})
 	}
 
 	if result.Error != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
 			"status": "fail", 
-			"message": "Invalid verification code or user doesn't exist",
+			"message": "invalid verification code or code does not exist",
 		})
 		return
 	}
@@ -176,7 +193,22 @@ func ResetPassword(c *gin.Context) {
 	updatedUser.PasswordResetCode = ""
 
 	models.DB.Save(&user)
+	// TODO: Test if user is saved twice
+	if err := models.DB.Save(&user).Error; err != nil{
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"message": err.Error(),
+		})
+	}
+	
 	models.DB.Save(&updatedUser)
+
+	if err := models.DB.Save(&updatedUser).Error; err != nil{
+		c.IndentedJSON(http.StatusInternalServerError, gin.H{
+			"status": "error",
+			"message": err.Error(),
+		})
+	} 
 
 	c.SetCookie("access_token", "", -1, "/", "localhost", false, true)
 	c.SetCookie("refresh_token", "", -1, "/", "localhost", false, true)
@@ -184,6 +216,6 @@ func ResetPassword(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, gin.H{
 		"status": "success",
-		"message": "Password reset successful"},
+		"message": "password reset successful"},
 	)
 }
