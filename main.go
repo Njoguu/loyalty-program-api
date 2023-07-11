@@ -8,8 +8,11 @@ import (
 	"github.com/gin-contrib/cors"
 	controllers "api/controllers"
 	adminControllers "api/controllers/admin"
+	"github.com/go-playground/validator/v10"
 )
 
+// Register custom validation messages
+var validate *validator.Validate
 
 var Server *gin.Engine
 
@@ -22,6 +25,8 @@ func init(){
 
 	// Initialize Cache Connection
 	models.InitCache()
+
+	validate = validator.New()
 
 	Server = gin.Default() //router
 }

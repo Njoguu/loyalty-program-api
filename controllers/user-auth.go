@@ -1,23 +1,25 @@
 /*
-This file contains logic for various API functions concerning 
+This file contains logic for various API functions concerning
 Membership Service and Auth
 */
 
 package controllers
 
 import (
-	"os"
-	"time"
-	"errors"
-	"strings"
-	"strconv"
-	"net/http"
-	"api/utils"
 	models "api/models"
+	"api/utils"
 	mail "api/utils/mail"
 	token "api/utils/token"
-	"github.com/jinzhu/gorm"
+	"errors"
+	"net/http"
+	"os"
+	"strconv"
+	"strings"
+	"time"
+
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
+	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
 	"github.com/thanhpk/randstr"
 )
@@ -29,9 +31,11 @@ func CreateAccount(c *gin.Context){
 	var input models.CreateUserInput
 
 	if err := c.ShouldBindJSON(&input); err != nil{
+		// Handle validation error
+		errs := err.(validator.ValidationErrors)
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
 			"status": "error",
-			"error": err.Error(),
+			"error": errs.Error(),
 		})
 		return
 	}
@@ -203,9 +207,11 @@ func Login(c *gin.Context) {
 	var input *models.LoginInput
 
 	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
+		// Handle validation error
+		errs := err.(validator.ValidationErrors)
+		c.IndentedJSON(http.StatusBadRequest, gin.H{
 			"status": "fail",
-			"message": err.Error(),
+			"message": errs.Error(),
 		})
 		return
 	}
@@ -321,14 +327,15 @@ func ChangePassword(c *gin.Context){
 
 	// Get the new password and confirm password from the request body
 	var passwordReset struct {
-		NewPassword     string `json:"new_password"`
-		ConfirmPassword string `json:"confirm_password"`
+		NewPassword     string `json:"new_password" binding:"required,min=7"`
+		ConfirmPassword string `json:"confirm_password" binding:"required,min=7"`
 	}
 
 	if err := c.ShouldBindJSON(&passwordReset); err != nil{
+		errs := err.(validator.ValidationErrors)
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
 			"status": "fail",
-			"error": err.Error(),
+			"error": errs.Error(),
 		})
 		return
 	}

@@ -26,14 +26,14 @@ type User struct {
 
 // User Creation Request Data
 type CreateUserInput struct {
-    Username string `json:"username" validate:"required"`
-    FirstName string `json:"firstname" validate:"required"`
-    LastName string `json:"lastname" validate:"required"`
-    Gender string `json:"gender" validate:"required"`
-    EmailAddress string `json:"email" validate:"required,email"`
-    Password string `json:"password" validate:"required"`
-    City string `json:"city" validate:"required"`
-    PhoneNumber string `json:"phone_number" validate:"required"`    
+    Username string `json:"username" binding:"required,min=4,max=16"    `
+    FirstName string `json:"firstname" binding:"required"`
+    LastName string `json:"lastname" binding:"required"`
+    Gender string `json:"gender" binding:"required"`
+    EmailAddress string `json:"email" binding:"required,email"`
+    Password string `json:"password" binding:"required,min=7"   `
+    City string `json:"city" binding:"required"`
+    PhoneNumber string `json:"phone_number" binding:"required"`    
 }
 
 type VerifyEmails struct {
@@ -56,8 +56,8 @@ type PasswordReset struct{
 
 // User Login Request data
 type LoginInput struct {
-	EmailAddress    string `json:"email"  validate:"required"`
-	Password string `json:"password"  validate:"required"`
+	EmailAddress    string `json:"email"  binding:"required,email"`
+	Password string `json:"password"  binding:"required,min=7"`
 }
 
 // User Data Response
@@ -74,13 +74,13 @@ type UserResponse struct {
 
 // ForgotPasswordInput
 type ForgotPasswordInput struct{
-    EmailAddress string `json:"email" validate:"required, email"`
+    EmailAddress string `json:"email" binding:"required,email"`
 }
 
 // ResetPasswordInput
 type ResetPasswordInput struct{
-    NewPassword string  `json:"new_password" validate:"required"`
-    ConfirmPassword string  `json:"confirm_password" validate:"required"`
+    NewPassword string  `json:"new_password" binding:"required,min=7"`
+    ConfirmPassword string  `json:"confirm_password" binding:"required,min=7"`
 }
 
 
@@ -109,24 +109,6 @@ func HashPassword(password string) (string, error) {
 		return "", fmt.Errorf("could not hash password %w", err)
 	}
 	return string(hashedPassword), nil
-}
-
-// Get Data of logged in user/ user providing token
-func GetUser(uid uint) (User, error){
-
-    var user User
-    if err := DB.First(&user,uid).Error; err != nil{
-        return user, errors.New("User Not Found")
-    }
-
-    user.PrepareGive()
-
-    return user, nil
-}
-
-// Hide Password in returned data
-func (user *User)PrepareGive(){
-    user.Password = ""
 }
 
 // Function to update the user's password in the database

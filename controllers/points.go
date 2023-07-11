@@ -5,6 +5,7 @@ import (
 	models "api/models"
 	"github.com/jinzhu/gorm"
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 // Function to redeem points
@@ -14,13 +15,15 @@ func RedeemPoints(c *gin.Context){
 
     // Get the product ID and quantity from the request body
     var request struct {
-        ProductName  string  `json:"product_name"`
-        Quantity int `json:"product_quantity"`
+        ProductName  string  `json:"product_name" binding:"required"`
+        Quantity int `json:"product_quantity" binding:"required"`
     }
+
     if err := c.ShouldBindJSON(&request); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{
+        errs := err.(validator.ValidationErrors)
+        c.IndentedJSON(http.StatusBadRequest, gin.H{
 			"status": "fail",
-			"message": err.Error(), 
+			"message": errs.Error(), 
 		})
         return
     }

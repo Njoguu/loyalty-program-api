@@ -12,6 +12,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/go-playground/validator/v10"
 )
 
 // Define Logger Instance
@@ -24,9 +25,10 @@ func ForgotPassword(c *gin.Context) {
 	var userCredential *models.ForgotPasswordInput
 
 	if err := c.ShouldBindJSON(&userCredential); err != nil {
+		errs := err.(validator.ValidationErrors)
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
 			"status": "error",
-			"message": err.Error(),
+			"message": errs.Error(),
 		})
 		return
 	}
@@ -139,9 +141,10 @@ func ResetPassword(c *gin.Context) {
 	var userCredential *models.ResetPasswordInput
 
 	if err := c.ShouldBindJSON(&userCredential); err != nil {
+		errs := err.(validator.ValidationErrors)
 		c.IndentedJSON(http.StatusBadRequest, gin.H{
 			"status": "fail",
-			"message": err.Error(),
+			"message": errs.Error(),
 		})
 		return
 	}
