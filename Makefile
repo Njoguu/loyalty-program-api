@@ -64,7 +64,7 @@ migratedb:
 #== DB MIGRATION Targets
 #================================
 create-migrations: 
-	migrate create -ext $(MIGRATION_EXT) -dir $(MIGRATION_DIR) -seq $(NAME)
+	migrate create -ext $(MIGRATION_EXT) -dir $(MIGRATION_DIR) -seq $(MIGRATION_NAME)
 
 migrateup:
 	migrate -path $(MIGRATION_DIR) -database "$(DB_CONN)" -verbose up
@@ -78,4 +78,4 @@ migrateup1:
 migratedown1:
 	migrate -path $(MIGRATION_DIR) -database "$(DB_CONN)" -verbose down 1
 
-.PHONY: createdb postgres dropdb migrateup migratedown
+.PHONY: createdb postgres dropdb migrateup migratedown create-migrations
