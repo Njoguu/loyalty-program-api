@@ -32,7 +32,7 @@ The API has put in place the following features:
 - [x] Password hashing with `bcrypt`
 - [ ] Simple firewall (whitelist/blacklist IP)
 - [ ] Webhook Integration for Real-time Deployment Status Notifications
-- [ ] Request data validation
+- [x] Request data validation
 - [x] Email verification (sending verification email)
 - [x] Forgot password recovery
 - [x] Render `HTML` templates
