@@ -19,7 +19,7 @@ jobs:
           node-version: 18
       
       - name: Install dependencies
-        run: npm install aglio
+        run: npm install -g aglio
       
       - name: Generate Docs
         run: aglio -i docs/index.apib -o docs/index.html
