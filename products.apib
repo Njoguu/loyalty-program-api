@@ -1,0 +1,47 @@
+## Data Structures
+
+### AvailableProducts (object)
++ product_name: Airtime 10 KES (string, required)
++ product_description: By Lexcom-Hellopay (string, required)
++ product_price: 250 (number, required)
+
+# Group Products
+
+## Get All Available Products [/api/users/products]
+
+### Get All Products [GET]
+Retrieves a list of all available products.
+
+
++ Request
+
+    + Headers 
+
+        Cookie: token=<token_value>
+        Authorization: Bearer <jwt>
+
++ Response 200 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + message: Products Retrieval successful! (required)
+        + data (object,required)
+            + products (array[AvailableProducts], required) - The list of all available products
+
++ Response 401
+
+    + Attributes
+        + status: fail (required)
+        + message: You are not logged in
+
++ Response 404
+
+    + Attributes
+        + status: fail (required)
+        + message: Products not found
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: Failed to retrieve products

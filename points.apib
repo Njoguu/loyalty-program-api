@@ -1,0 +1,46 @@
+## Data Structures
+
+### ProductRequestData
++ product_name: Airtime 20 KES (required)
++ product_quantity: 1 (number, required)
+
+
+# Group Points
+Loyalty Program Members Redeem Points endpoint
+
+
+## Redeem Points [/api/users/me/redeem]
+Redeem Points earned for a product/service
+
+### Points Redemption [POST]
++ Request with Body (application/json)
+
+    + Attributes(ProductRequestData)
+
++ Response 200 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + message: "Redemption successful" (required)
+        + redeemed_product: "Airtime 20 KES" (required)
+        + redeemed_points : 500 (number, required)
+        + balance (object, required)
+            + redeemable_points: 0 (number, required) - The user's balance of redeemable points
+
++ Response 401
+
+    + Attributes
+        + status: fail (required)
+        + message: "You are not logged in"
+        
++ Response 404
+
+    + Attributes
+        + status: fail (required)
+        + message: "Product not found" (required)
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: "Things have gone really bad!"

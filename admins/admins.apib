@@ -1,0 +1,211 @@
+## Data Structures
+
+### LoginRequest
++ username: YourUsername23 (required)
++ password: your-password (required)
+
+### ProductData
++ product_name: AIRTIME 10 KES (required)
++ product_description: By Lexcom-Hellopay (required)
++ product_price: 250 (number, required)
++ quantity: 10 (number, required)
+
+### AllProducts (object)
++ ID: 1 (number, required)
++ CreatedAt: 2023-06-05T10:00:25.020265+03:00 (string, required)
++ UpdatedAt: 2023-06-05T14:28:57.824939+03:00 (string, required)
++ DeletedAt: 2023-06-05T18:22:07.824939+03:00(string, required)
++ product_name: Airtime 10 KES (string, required)
++ product_description: By Lexcom-Hellopay (string, required)
++ product_price: 250 (number, required)
++ quantity: 7 (number, required)
+
+
+# Group Admins
+Admin endpoints of loyalty-program api
+
+## Login [/api/auth/admin/login]
+Authenticates an admin user and returns an access token.
+
+### Admin login [POST]
++ Request with Body (application/json)
+
+    + Attributes(LoginRequest)
+
++ Response 200 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + token: dfghjkloiuytredfghjiuytredfcvbjkiouytr (required)
+        
++ Response 400
+
+    + Attributes
+        + status: fail (required)
+        + message: "Invalid Password" (required)
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: "Things have gone really bad!"
+
+## Logout [/api/admin/logout]
+Send an expired cookie to the browser or client. Sending the expired cookie will invalidate the admin's 'session'.
+
+### Admin logout [GET]
+
++ Response 200
+
+    + Attributes
+        + status: success (required)
+        + message: "You have been logged out!"
+
+
+# Products
+Product-related endpoints.
+
+## Add New Product [/api/admin/product]
+
+### Create Product [POST]
+Creates a new product.
+
++ Request with Body (application/json)
+
+    + Attributes(ProductData)
+
++ Response 201 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + message: "Product added successfully" (required)
+
++ Response 401
+
+    + Attributes
+        + status: fail (required)
+        + message: "You are not logged in"
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: "Things have gone really bad!"
+
+## Update a Product [/api/admin/product/{id}]
+
+### Update Product [PUT]
+Updates a product by its id
+
++ Parameters
+    + id (number)  ... id of the product to be update
+
++ Request with Body (application/json)
+
+    + Attributes(ProductData)
+
++ Response 200 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + message: Product updated successfully (required)
+
++ Response 400
+
+    + Attributes
+        + status: fail (required)
+        + message: Failed to retrieve product
+
++ Response 401
+
+    + Attributes
+        + status: fail (required)
+        + message: You are not logged in
+
++ Response 404
+
+    + Attributes
+        + status: fail (required)
+        + message: Product not found
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: Failed to udpate product
+
+## Delete a Product [/api/admin/product/{id}]
+
+### Delete Product [DELETE]
+Deletes a product by its id
+
++ Parameters
+    + id (number)  ... id of the product to be delete
+
++ Response 204 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + message: Product deleted successfully (required)
+
++ Response 400
+
+    + Attributes
+        + status: fail (required)
+        + message: Failed to retrieve product
+
++ Response 401
+
+    + Attributes
+        + status: fail (required)
+        + message: You are not logged in
+
++ Response 404
+
+    + Attributes
+        + status: fail (required)
+        + message: Product not found
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: Failed to delete product
+
+## Get All Products [/api/admin/product]
+
+### Get Products [GET]
+Retrieves a list of all products.
+
++ Request
+
+    + Headers 
+
+        Cookie: token=<token_value>
+        Authorization: Bearer <jwt>
+
++ Response 200 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + message: Products Retrieval successful! (required)
+        + data (object,required)
+            + products (array[AllProducts], required) - The list of all available products
+
++ Response 401
+
+    + Attributes
+        + status: fail (required)
+        + message: You are not logged in
+
++ Response 404
+
+    + Attributes
+        + status: fail (required)
+        + message: Products not found
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: Failed to retrieve products

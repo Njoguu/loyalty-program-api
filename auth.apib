@@ -1,0 +1,209 @@
+## Data Structures
+
+### SigninRequest
++ email: user@example.com (required)
++ password: your_password (required)
+
+### CreateAccountRequest
++ username: YourUsername23 (required)
++ firstname: your-firstname (required)
++ lastname: your-lastname (required)
++ gender: your-gender (required)
++ email: user@example.com (required)
++ password : your-password (required)
++ city: your-city (required)
++ phone_number: your-phone-number (required)
+
+### UserDataResponse
++ user (object, required) - The user data
+    + username: YourUsername23 (required) - The user's username
+    + firstname: yourFirstname (required) - The user's first name
+    + lastname: yourLastname (required) - The user's last name
+    + email: user@example.com (required) - The user's email
+    + phone_number: +25412345789 (required) - The user's phone number
+    + redeemable_points: 250 (number, required) - The user's total points
+    + city: Nairobi (required ) - The user's city
+    + card_number: 0123456789012 (required) - The user's virtual card number
+
+### UpdatePasswordData
++ new_password: yournewpassword (required)
++ confirm_password: yournewpassword (required)
+
+# Group Membership Service
+Loyalty Program Membership Service endpoints
+
+
+## Create Account [/api/auth/register]
+Create User account and send activation email
+
+### Account creation [POST]
++ Request with Body (application/json)
+
+    + Attributes(CreateAccountRequest)
+
++ Response 200 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + message: "We sent an email with a verification code to user@example.com" (required)
+        
++ Response 400
+
+    + Attributes
+        + status: fail (required)
+        + message: error (required)
+
++ Response 409
+
+    + Attributes
+        + status: fail (required)
+        + message : "User with that credential already exists" (required)
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: "Things have gone really bad!"
+
++ Response 502
+
+    + Attributes
+        + status: error (required)
+        + message: "Error!"
+
+## VerifyEmail [/api/auth/verify-email/:{secret_code}]
+Verify email of correspondent account and grant login access
+
+### User email verification [GET]
++ Parameters
+    + secret_code: 26dlFidiTVJHFH7Y (required)
+
++ Response 200 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + message: "Email verified successfully" (required)
+        
++ Response 400
+
+    + Attributes
+        + status: fail (required)
+        + message: "Invalid verification code or user doesn't exist" (required)
+
++ Response 409
+
+    + Attributes
+        + status: fail (required)
+        + message : "User already verified" (required)
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: "Things have gone really bad!"
+
+
+## Signin [/api/auth/login]
+Validate logging in of user
+
+### User login [POST]
++ Request with Body (application/json)
+
+    + Attributes(SigninRequest)
+
++ Response 200 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + token: dfghjkloiuytredfghjiuytredfcvbjkiouytr (required)
+        
++ Response 400
+
+    + Attributes
+        + status: fail (required)
+        + message: "Invalid email or Password" (required)
+
++ Response 403
+
+    + Attributes
+        + status: fail (required)
+        + message : "Please verify your email" (required)
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: "Things have gone really bad!"
+
+## Logout [/api/auth/logout]
+Send an expired cookie to the user’s browser or client. Sending the expired cookie will invalidate the user's 'session'.
+
+### User logout [GET]
+
++ Response 200
+
+    + Attributes
+        + status: success (required)
+        + message: "You have been logged out!"
+
+## Get User Data [/api/users/me]
+Retrieve the currently logged-in user’s information.
+
+### Get user data [GET]
+
++ Request
+
+    + Headers 
+
+        Cookie: token=<token_value>
+
++ Response 200
+
+    + Attributes
+        + status: success (required)
+        + data (UserDataResponse, required)
+
++ Response 401
+
+    + Attributes
+        + status: fail (required)
+        + message: "You are not logged in"
+
+## Change User Product [/api/users/me/change-password]
+
+### Change Password [PATCH]
+Update the logged in user's password
+
++ Request
+
+    + Headers
+
+        Content-Type: application/json
+        Cookie: token=<token-value>
+        Authorization: Bearer <jwt>
+
+    + Attributes(UpdatePasswordData)
+
++ Response 200 (application/json)
+
+    + Attributes
+        + status: success (required)
+        + message: Password change successful (required)
+
++ Response 400
+
+    + Attributes
+        + status: error (required)
+        + message: Passwords do not match
+
++ Response 401
+
+    + Attributes
+        + status: fail (required)
+        + message: You are not logged in
+
++ Response 500
+
+    + Attributes
+        + status: error (required)
+        + message: Failed to udpate password
