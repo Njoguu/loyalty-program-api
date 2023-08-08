@@ -2,14 +2,14 @@
 <section id="membership-service" class="resource-group"><h2 class="group-heading">Membership Service <a href="#membership-service" class="permalink">&para;</a></h2><p>Loyalty Program Membership Service endpoints</p>
 <div id="membership-service-create-account" class="resource"><h3 class="resource-heading">Create Account <a href="#membership-service-create-account" class="permalink">&nbsp;&para;</a></h3><p>Create User account and send activation email</p>
 <div id="membership-service-create-account-post" class="action post"><h4 class="action-heading"><div class="name">Account creation</div><a href="#membership-service-create-account-post" class="method post">POST</a><code class="uri">/api/auth/register</code></h4><h4>Example URI</h4><div class="definition"><span class="method post">POST</span>&nbsp;<span class="uri"><span class="hostname"></span>/api/auth/register</span></div><div class="title"><strong>Request&nbsp;&nbsp;<code>with Body</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
-  "<span class="hljs-attribute">username</span>": <span class="hljs-value"><span class="hljs-string">"YourUsername23"</span></span>,
-  "<span class="hljs-attribute">firstname</span>": <span class="hljs-value"><span class="hljs-string">"your"</span></span>,
-  "<span class="hljs-attribute">lastname</span>": <span class="hljs-value"><span class="hljs-string">"your"</span></span>,
-  "<span class="hljs-attribute">gender</span>": <span class="hljs-value"><span class="hljs-string">"your"</span></span>,
-  "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"user@example.com"</span></span>,
-  "<span class="hljs-attribute">password</span>": <span class="hljs-value"><span class="hljs-string">"your"</span></span>,
-  "<span class="hljs-attribute">city</span>": <span class="hljs-value"><span class="hljs-string">"your"</span></span>,
-  "<span class="hljs-attribute">phone_number</span>": <span class="hljs-value"><span class="hljs-string">"your"</span>
+  "<span class="hljs-attribute">username</span>": <span class="hljs-value"><span class="hljs-string">"TestUser"</span></span>,
+  "<span class="hljs-attribute">firstname</span>": <span class="hljs-value"><span class="hljs-string">"Test"</span></span>,
+  "<span class="hljs-attribute">lastname</span>": <span class="hljs-value"><span class="hljs-string">"User"</span></span>,
+  "<span class="hljs-attribute">gender</span>": <span class="hljs-value"><span class="hljs-string">"yourGender"</span></span>,
+  "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"testuser@example.com"</span></span>,
+  "<span class="hljs-attribute">password</span>": <span class="hljs-value"><span class="hljs-string">"examplePasword232"</span></span>,
+  "<span class="hljs-attribute">city</span>": <span class="hljs-value"><span class="hljs-string">"Nairobi"</span></span>,
+  "<span class="hljs-attribute">phone_number</span>": <span class="hljs-value"><span class="hljs-string">"+25412345789"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span></span>,
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
@@ -18,40 +18,40 @@
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
     </span>}</span>,
     "<span class="hljs-attribute">firstname</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
-      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"firstname (required)"</span>
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
     </span>}</span>,
     "<span class="hljs-attribute">lastname</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
-      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"lastname (required)"</span>
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
     </span>}</span>,
     "<span class="hljs-attribute">gender</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
-      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"gender (required)"</span>
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
     </span>}</span>,
     "<span class="hljs-attribute">email</span>": <span class="hljs-value">{
       "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
     </span>}</span>,
     "<span class="hljs-attribute">password</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
-      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"password (required)"</span>
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
     </span>}</span>,
     "<span class="hljs-attribute">city</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
-      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"city (required)"</span>
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
     </span>}</span>,
     "<span class="hljs-attribute">phone_number</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span></span>,
-      "<span class="hljs-attribute">description</span>": <span class="hljs-value"><span class="hljs-string">"phone-number (required)"</span>
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
     </span>}
   </span>}</span>,
   "<span class="hljs-attribute">required</span>": <span class="hljs-value">[
     <span class="hljs-string">"username"</span>,
-    <span class="hljs-string">"email"</span>
+    <span class="hljs-string">"firstname"</span>,
+    <span class="hljs-string">"lastname"</span>,
+    <span class="hljs-string">"gender"</span>,
+    <span class="hljs-string">"email"</span>,
+    <span class="hljs-string">"password"</span>,
+    <span class="hljs-string">"city"</span>,
+    <span class="hljs-string">"phone_number"</span>
   ]
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"success"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"We sent an email with a verification code to user@example.com\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"We sent an email with a verification code to testuser@example.com"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span></span>,
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
@@ -87,7 +87,7 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>409</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"fail"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"User with that credential already exists\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"User with that credential already exists"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -105,7 +105,7 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>500</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"error"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Things have gone really bad!\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Things have gone really bad"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -122,7 +122,7 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>502</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"error"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Error!\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Error"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -140,7 +140,7 @@
 </span>}</code></pre><div style="height: 1px;"></div></div></div></div></div><div id="membership-service-verifyemail" class="resource"><h3 class="resource-heading">VerifyEmail <a href="#membership-service-verifyemail" class="permalink">&nbsp;&para;</a></h3><p>Verify email of correspondent account and grant login access</p>
 <div id="membership-service-verifyemail-get" class="action get"><h4 class="action-heading"><div class="name">User email verification</div><a href="#membership-service-verifyemail-get" class="method get">GET</a><code class="uri">/api/auth/verify-email/:{secret_code}</code></h4><h4>Example URI</h4><div class="definition"><span class="method get">GET</span>&nbsp;<span class="uri"><span class="hostname"></span>/api/auth/verify-email/:<span class="hljs-attribute" title="secret_code">26dlFidiTVJHFH7Y</span></span></div><div class="title"><strong>URI Parameters</strong><div class="collapse-button show"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><dl class="inner"><dt>secret_code</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<span class="text-muted example"><strong>Example:&nbsp;</strong><span>26dlFidiTVJHFH7Y</span></span></dd></dl></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"success"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Email verified successfully\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Email verified successfully"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span></span>,
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
@@ -158,7 +158,7 @@
   ]
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>400</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"fail"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Invalid verification code or user doesn't exist\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Invalid verification code or user doesn't exist"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -176,7 +176,7 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>409</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"fail"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"User already verified\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"User already verified"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -194,7 +194,7 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>500</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"error"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Things have gone really bad!\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Things have gone really bad"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -211,8 +211,8 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div></div></div><div id="membership-service-signin" class="resource"><h3 class="resource-heading">Signin <a href="#membership-service-signin" class="permalink">&nbsp;&para;</a></h3><p>Validate logging in of user</p>
 <div id="membership-service-signin-post" class="action post"><h4 class="action-heading"><div class="name">User login</div><a href="#membership-service-signin-post" class="method post">POST</a><code class="uri">/api/auth/login</code></h4><h4>Example URI</h4><div class="definition"><span class="method post">POST</span>&nbsp;<span class="uri"><span class="hostname"></span>/api/auth/login</span></div><div class="title"><strong>Request&nbsp;&nbsp;<code>with Body</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
-  "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"user@example.com"</span></span>,
-  "<span class="hljs-attribute">password</span>": <span class="hljs-value"><span class="hljs-string">"your_password"</span>
+  "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"testuser@example.com"</span></span>,
+  "<span class="hljs-attribute">password</span>": <span class="hljs-value"><span class="hljs-string">"examplePasword232"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span></span>,
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
@@ -248,7 +248,7 @@
   ]
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>400</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"fail"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Invalid email or Password\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Invalid email or Password"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -266,7 +266,7 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>403</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"fail"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Please verify your email\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Please verify your email"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -284,7 +284,7 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>500</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"error"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Things have gone really bad!\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Things have gone really bad"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -302,7 +302,7 @@
 </span>}</code></pre><div style="height: 1px;"></div></div></div></div></div><div id="membership-service-logout" class="resource"><h3 class="resource-heading">Logout <a href="#membership-service-logout" class="permalink">&nbsp;&para;</a></h3><p>Send an expired cookie to the user’s browser or client. Sending the expired cookie will invalidate the user’s ‘session’.</p>
 <div id="membership-service-logout-get" class="action get"><h4 class="action-heading"><div class="name">User logout</div><a href="#membership-service-logout-get" class="method get">GET</a><code class="uri">/api/auth/logout</code></h4><h4>Example URI</h4><div class="definition"><span class="method get">GET</span>&nbsp;<span class="uri"><span class="hostname"></span>/api/auth/logout</span></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"success"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"You have been logged out!\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"You have been logged out"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -322,10 +322,10 @@
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"success"</span></span>,
   "<span class="hljs-attribute">data</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">user</span>": <span class="hljs-value">{
-      "<span class="hljs-attribute">username</span>": <span class="hljs-value"><span class="hljs-string">"YourUsername23"</span></span>,
-      "<span class="hljs-attribute">firstname</span>": <span class="hljs-value"><span class="hljs-string">"yourFirstname"</span></span>,
-      "<span class="hljs-attribute">lastname</span>": <span class="hljs-value"><span class="hljs-string">"yourLastname"</span></span>,
-      "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"user@example.com"</span></span>,
+      "<span class="hljs-attribute">username</span>": <span class="hljs-value"><span class="hljs-string">"TestUser"</span></span>,
+      "<span class="hljs-attribute">firstname</span>": <span class="hljs-value"><span class="hljs-string">"Test"</span></span>,
+      "<span class="hljs-attribute">lastname</span>": <span class="hljs-value"><span class="hljs-string">"User"</span></span>,
+      "<span class="hljs-attribute">email</span>": <span class="hljs-value"><span class="hljs-string">"testuser@example.com"</span></span>,
       "<span class="hljs-attribute">phone_number</span>": <span class="hljs-value"><span class="hljs-string">"+25412345789"</span></span>,
       "<span class="hljs-attribute">redeemable_points</span>": <span class="hljs-value"><span class="hljs-number">250</span></span>,
       "<span class="hljs-attribute">city</span>": <span class="hljs-value"><span class="hljs-string">"Nairobi"</span></span>,
@@ -402,7 +402,7 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>401</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"fail"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"You are not logged in\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"You are not logged in"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -619,8 +619,8 @@
   ]
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"success"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Redemption successful\""</span></span>,
-  "<span class="hljs-attribute">redeemed_product</span>": <span class="hljs-value"><span class="hljs-string">"\"Airtime 20 KES\""</span></span>,
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Redemption successful"</span></span>,
+  "<span class="hljs-attribute">redeemed_product</span>": <span class="hljs-value"><span class="hljs-string">"Airtime 20 KES"</span></span>,
   "<span class="hljs-attribute">redeemed_points</span>": <span class="hljs-value"><span class="hljs-number">500</span></span>,
   "<span class="hljs-attribute">balance</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">redeemable_points</span>": <span class="hljs-value"><span class="hljs-number">0</span>
@@ -663,7 +663,7 @@
   ]
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>401</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"fail"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"You are not logged in\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"You are not logged in"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -680,7 +680,7 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>404</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"fail"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Product not found\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Product not found"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -698,7 +698,7 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>500</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"error"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Things have gone really bad!\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Things have gone really bad"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -717,7 +717,7 @@
 <div id="transaction-history-view-transaction-history" class="resource"><h3 class="resource-heading">View Transaction History <a href="#transaction-history-view-transaction-history" class="permalink">&nbsp;&para;</a></h3><p>Get a list of a logged in user’s transaction data</p>
 <div id="transaction-history-view-transaction-history-get" class="action get"><h4 class="action-heading"><div class="name">List all Transactions</div><a href="#transaction-history-view-transaction-history-get" class="method get">GET</a><code class="uri">/api/users/me/transaction-history</code></h4><h4>Example URI</h4><div class="definition"><span class="method get">GET</span>&nbsp;<span class="uri"><span class="hostname"></span>/api/users/me/transaction-history</span></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Cookie</span>: <span class="hljs-string">token=&lt;token_value&gt;</span><br><span class="hljs-attribute">Authorization</span>: <span class="hljs-string">Bearer &lt;jwt&gt;</span></code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"success"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Transaction History Retrieval successful!\""</span></span>,
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Transaction History Retrieval successful!"</span></span>,
   "<span class="hljs-attribute">data</span>": <span class="hljs-value">{
     "<span class="hljs-attribute">transactions</span>": <span class="hljs-value">[
       {
@@ -759,7 +759,7 @@
   ]
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>401</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"fail"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"You are not logged in\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"You are not logged in"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -776,7 +776,7 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>404</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"fail"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Transactions not found\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Transactions not found"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -794,7 +794,7 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>500</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"error"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Failed to retrieve transactions\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Failed to retrieve transactions"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -992,7 +992,7 @@
   ]
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>400</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"fail"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Invalid Password\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Invalid Password"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -1010,7 +1010,7 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>500</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"error"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Things have gone really bad!\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Things have gone really bad"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -1028,7 +1028,7 @@
 </span>}</code></pre><div style="height: 1px;"></div></div></div></div></div><div id="admins-logout" class="resource"><h3 class="resource-heading">Logout <a href="#admins-logout" class="permalink">&nbsp;&para;</a></h3><p>Send an expired cookie to the browser or client. Sending the expired cookie will invalidate the admin’s ‘session’.</p>
 <div id="admins-logout-get" class="action get"><h4 class="action-heading"><div class="name">Admin logout</div><a href="#admins-logout-get" class="method get">GET</a><code class="uri">/api/admin/logout</code></h4><h4>Example URI</h4><div class="definition"><span class="method get">GET</span>&nbsp;<span class="uri"><span class="hostname"></span>/api/admin/logout</span></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"success"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"You have been logged out!\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"You have been logged out"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -1074,7 +1074,7 @@
   ]
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>201</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"success"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Product added successfully\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Product added successfully"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span></span>,
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
@@ -1092,7 +1092,7 @@
   ]
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>401</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"fail"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"You are not logged in\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"You are not logged in"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -1109,7 +1109,7 @@
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
 </span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>500</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{
   "<span class="hljs-attribute">status</span>": <span class="hljs-value"><span class="hljs-string">"error"</span></span>,
-  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"\"Things have gone really bad!\""</span>
+  "<span class="hljs-attribute">message</span>": <span class="hljs-value"><span class="hljs-string">"Things have gone really bad"</span>
 </span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
   "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
   "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
@@ -1425,7 +1425,7 @@
     <span class="hljs-string">"status"</span>
   ]</span>,
   "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
-</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section></div></div></div><p style="text-align: center;" class="text-muted">Generated by&nbsp;<a href="https://github.com/danielgtaylor/aglio" class="aglio">aglio</a>&nbsp;on 19 Jul 2023</p><script>/* eslint-env browser */
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section></div></div></div><p style="text-align: center;" class="text-muted">Generated by&nbsp;<a href="https://github.com/danielgtaylor/aglio" class="aglio">aglio</a>&nbsp;on 08 Aug 2023</p><script>/* eslint-env browser */
 /* eslint quotes: [2, "single"] */
 'use strict';
 

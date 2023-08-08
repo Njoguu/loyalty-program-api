@@ -29,7 +29,7 @@ Get a list of a logged in user's transaction data
 
     + Attributes
         + status: success (required)
-        + message: "Transaction History Retrieval successful!" (required)
+        + message: Transaction History Retrieval successful! (required)
         + data (object, required)
             + transactions (array[TransactionHistory], required) - The user's list of transactions
 
@@ -37,16 +37,16 @@ Get a list of a logged in user's transaction data
 
     + Attributes
         + status: fail (required)
-        + message: "You are not logged in"
+        + message: You are not logged in
         
 + Response 404
 
     + Attributes
         + status: fail (required)
-        + message: "Transactions not found" (required)
+        + message: Transactions not found (required)
 
 + Response 500
 
     + Attributes
         + status: error (required)
-        + message: "Failed to retrieve transactions"
+        + message: Failed to retrieve transactions
