@@ -6,8 +6,7 @@
 <br>
 [![Build](https://github.com/Njoguu/loyalty-program-api/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/Njoguu/loyalty-program-api/actions/workflows/build.yml)
 [![CodeQL Analysis](https://github.com/Njoguu/loyalty-program-api/actions/workflows/codeql_analysis.yml/badge.svg?branch=main)](https://github.com/Njoguu/loyalty-program-api/actions/workflows/codeql_analysis.yml) <br>
-[![pages-build-deployment](https://github.com/Njoguu/loyalty-program-api/actions/workflows/pages/pages-build-deployment/badge.svg?branch=main)](https://github.com/Njoguu/loyalty-program-api/actions/workflows/pages/pages-build-deployment)
-<br>
+[![GitHub Pages](https://github.com/Njoguu/loyalty-program-api/actions/workflows/pages-build.yml/badge.svg)](https://github.com/Njoguu/loyalty-program-api/actions/workflows/pages-build.yml)
 
 This is a loyalty points API built with GO and the Gin web framework. The API allows customers to earn points for purchases, and redeem those points for rewards.
 
@@ -32,7 +31,7 @@ The API has put in place the following features:
 - [x] Password hashing with `bcrypt`
 - [ ] Simple firewall (whitelist/blacklist IP)
 - [ ] Webhook Integration for Real-time Deployment Status Notifications
-- [ ] Request data validation
+- [x] Request data validation
 - [x] Email verification (sending verification email)
 - [x] Forgot password recovery
 - [x] Render `HTML` templates
