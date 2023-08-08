@@ -42,13 +42,13 @@ Authenticates an admin user and returns an access token.
 
     + Attributes
         + status: fail (required)
-        + message: "Invalid Password" (required)
+        + message: Invalid Password (required)
 
 + Response 500
 
     + Attributes
         + status: error (required)
-        + message: "Things have gone really bad!"
+        + message: Things have gone really bad
 
 ## Logout [/api/admin/logout]
 Send an expired cookie to the browser or client. Sending the expired cookie will invalidate the admin's 'session'.
@@ -59,7 +59,7 @@ Send an expired cookie to the browser or client. Sending the expired cookie will
 
     + Attributes
         + status: success (required)
-        + message: "You have been logged out!"
+        + message: You have been logged out
 
 
 # Products
@@ -78,19 +78,19 @@ Creates a new product.
 
     + Attributes
         + status: success (required)
-        + message: "Product added successfully" (required)
+        + message: Product added successfully (required)
 
 + Response 401
 
     + Attributes
         + status: fail (required)
-        + message: "You are not logged in"
+        + message: You are not logged in
 
 + Response 500
 
     + Attributes
         + status: error (required)
-        + message: "Things have gone really bad!"
+        + message: Things have gone really bad
 
 ## Update a Product [/api/admin/product/{id}]
 

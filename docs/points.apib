@@ -21,8 +21,8 @@ Redeem Points earned for a product/service
 
     + Attributes
         + status: success (required)
-        + message: "Redemption successful" (required)
-        + redeemed_product: "Airtime 20 KES" (required)
+        + message: Redemption successful (required)
+        + redeemed_product: Airtime 20 KES (required)
         + redeemed_points : 500 (number, required)
         + balance (object, required)
             + redeemable_points: 0 (number, required) - The user's balance of redeemable points
@@ -31,16 +31,16 @@ Redeem Points earned for a product/service
 
     + Attributes
         + status: fail (required)
-        + message: "You are not logged in"
+        + message: You are not logged in
         
 + Response 404
 
     + Attributes
         + status: fail (required)
-        + message: "Product not found" (required)
+        + message: Product not found (required)
 
 + Response 500
 
     + Attributes
         + status: error (required)
-        + message: "Things have gone really bad!"
+        + message: Things have gone really bad
