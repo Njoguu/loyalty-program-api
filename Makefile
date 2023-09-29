@@ -1,16 +1,16 @@
 # Variables
 APP_NAME=main
 
-DB_USER ?= root
-DB_PASSWORD ?= secret
+DB_USER ?= Njoguu
+DB_PASSWORD ?= alannjoguu
 DB_NAME ?= LoyaltyPointsDB
 DB_ADDRESS ?= localhost
-DB_PORT ?= 5432
-DB_OWNER ?= root
+DB_PORT ?= 5433
+DB_OWNER ?= Njoguu
 
 DB_CONN = postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable
 
-CONTAINER_NAME ?= postgresdb
+CONTAINER_NAME ?= postgres_db
 IMAGE ?= postgres:15.3-alpine3.18
 
 MIGRATION_EXT ?= "sql"
@@ -20,25 +20,34 @@ MIGRATION_DIR ?= "db/migrations"
 #================================
 #== DOCKER Targets
 #================================
-COMPOSE := @docker-compose
+COMPOSE := @docker compose
 
 postgres:
-	docker run --name $(CONTAINER_NAME) -p $(DB_PORT):$5432 -e POSTGRES_USER=$(DB_USER) -e POSTGRES_PASSWORD=$(DB_PASSWORD) -d $(IMAGE)
+	docker run --name $(CONTAINER_NAME) -p $(DB_PORT):5432 -e POSTGRES_USER=$(DB_USER) -e POSTGRES_PASSWORD=$(DB_PASSWORD) -d $(IMAGE)
 
 createdb:
 	docker exec -it $(CONTAINER_NAME) createdb --username=$(DB_USER) --owner=$(DB_OWNER) $(DB_NAME)
 	
 dropdb: 
-	docker exec -it $(CONTAINER_NAME) dropdb $(DB_NAME)
+	docker exec -it $(CONTAINER_NAME) dropdb -U $(DB_OWNER) $(DB_NAME) 
 
-dcb:
-	${COMPOSE} build
+start-services: 
+	$(COMPOSE) start db
+	$(COMPOSE) start cache
+	$(COMPOSE) start api
+
+stop-services:
+	$(COMPOSE) stop api
+	$(COMPOSE) stop cache
+	$(COMPOSE) stop db 
+
+restart-services: stop-services start-services
 
 dcu:
-	${COMPOSE} up -d build
+	$(COMPOSE) up -d --build
 
 dcd:
-	${COMPOSE} down
+	$(COMPOSE) down
 
 #================================
 #== GOLANG ENVIRONMENT Targets
