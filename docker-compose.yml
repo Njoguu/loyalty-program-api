@@ -3,37 +3,42 @@ services:
   ### ===================
   ### DB SERVICE
   ### ===================
-  postgres:
+  db:
     image: postgres:15.3-alpine3.18
-    env_file:
-      - .env
+    container_name: postgres_db
+    ports: 
+    - 5433:5432 
     environment:
-      - POSTGRES_DB=${PG_DB}
-      - POSTGRES_USER=${PG_USER}
-      - POSTGRES_PASSWORD=${PG_PASSWORD}
+      POSTGRES_DB: LoyaltyPointsDB
+      POSTGRES_USER: Njoguu
+      POSTGRES_PASSWORD: alannjoguu
+
+    restart: always
 
   # ===========
   # API SERVICE
   # ===========
   api:
-    container_name: api
+    container_name: gin_api
     build: 
       context: .
       dockerfile: Dockerfile
     ports:
-      - 8000:8000
+      - 8001:8000
     env_file:
       - .env
     depends_on:
-      - postgres
-      - redis
-    entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh"]
-    command: [ "/app/main" ]
+      - db
+      - cache
+        # entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh"]
+    # command: [ "/app/main" ]
+    restart: always
 
   ### ===================
   ### CACHE SERVICE
   ### ===================
-  redis: 
+  cache: 
+    container_name: redis_cache
     image: redis:7.2-rc2-alpine
     ports:
-      - 6379:6379
+      - 6380:6379

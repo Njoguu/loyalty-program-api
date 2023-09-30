@@ -20,20 +20,20 @@ RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/
 # ========================
 #       RUN STAGE
 # ========================
-FROM alpine:3.17
+# FROM alpine:3.17
 
-WORKDIR /app
+# WORKDIR /app
 
-COPY --from=builder /app/main .
-COPY --from=builder /app/migrate.linux-amd64 ./migrate
-COPY .env .
-COPY start.sh .
-COPY wait-for.sh .
-COPY db/migration ./migration
+# COPY --from=builder /app/main .
+# COPY --from=builder /app/migrate.linux-amd64 ./migrate
+# COPY .env .
+# COPY start.sh .
+# COPY wait-for.sh .
+# COPY db/migrations ./migrations
 
-# Expose port 8080 for the API
+# Expose port 8000 for the API
 EXPOSE 8000
 
 # Set the command to run when the container starts
 CMD ["/app/main"]
-ENTRYPOINT [ "/app/start.sh" ]
+# ENTRYPOINT [ "/app/start.sh" ]
