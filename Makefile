@@ -1,5 +1,5 @@
 # Variables
-APP_NAME=main
+APP_NAME=LoyaltyPointsAPI
 
 DB_USER ?= Njoguu
 DB_PASSWORD ?= alannjoguu
@@ -11,7 +11,6 @@ DB_OWNER ?= Njoguu
 DB_CONN = postgresql://$(DB_USER):$(DB_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable
 
 CONTAINER_NAME ?= postgres_db
-IMAGE ?= postgres:15.3-alpine3.18
 
 MIGRATION_EXT ?= "sql"
 MIGRATION_DIR ?= "db/migrations"
@@ -22,8 +21,11 @@ MIGRATION_DIR ?= "db/migrations"
 #================================
 COMPOSE := @docker compose
 
-postgres:
-	docker run --name $(CONTAINER_NAME) -p $(DB_PORT):5432 -e POSTGRES_USER=$(DB_USER) -e POSTGRES_PASSWORD=$(DB_PASSWORD) -d $(IMAGE)
+remove:
+	$(COMPOSE) down
+
+build:
+	$(COMPOSE) up --build -d
 
 createdb:
 	docker exec -it $(CONTAINER_NAME) createdb --username=$(DB_USER) --owner=$(DB_OWNER) $(DB_NAME)
@@ -43,31 +45,20 @@ stop-services:
 
 restart-services: stop-services start-services
 
-dcu:
-	$(COMPOSE) up -d --build
-
-dcd:
-	$(COMPOSE) down
 
 #================================
 #== GOLANG ENVIRONMENT Targets
 #================================
 GO := @go
 
-install:
-	${GO} get .
+# install:
+# 	${GO} get .
 
 tidy:
-	${GO} mod tidy
-
-start:
-	${GO} run main.go
-	
-build:
-	${GO} build -o ${APP_NAME} .
+	docker exec -it api ${GO} mod tidy
 
 migratedb:
-	${GO} run migrate/migrate.go
+	docker exec -it api ${GO} run migrate/migrate.go
 
 #================================
 #== DB MIGRATION Targets
