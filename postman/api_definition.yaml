@@ -1,0 +1,1325 @@
+openapi: '3.0.0'
+
+info:
+  version: '0.1.0'
+  title: 'Loyalty Points API'
+  description: Earn points for purchases, and redeem those points for rewards.
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:8001
+
+# Endpoints
+paths:
+  /api/auth/register:
+    post:
+      summary: Create User account and send activation email
+      security: []  # No security required for this endpoint
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "components.yaml#/CreateAccountRequest"
+      responses:
+        '201':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: The message for the response (required)
+                    example: we sent an email with a verification code to testuser@example.com
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: The error message (required)
+                    example: error
+        '409':
+          description: Conflict - User already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: The error message (required)
+                    example: user with that credential already exists
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: A general error message (required)
+                    example: Houston, we have a problem
+        '502':
+          description: Bad Gateway
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: An error message (required)
+                    example: Error
+
+  /api/auth/verify-email/{secret_code}:
+    parameters:
+    - name: secret_code
+      in: path
+      description: Verification secret code
+      required: true
+      schema:
+        type: string
+        example: 26dlFidiTVJHFH7Y
+    get:
+      summary: Verify email of correspondent account and grant login access
+      security: []      
+      responses:
+        '200':
+          description: Email verified successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: The message for the response (required)
+                    example: email verified successfully
+
+        '400':
+          description: Invalid verification code or user doesn't exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: The error message (required)
+                    example: invalid verification code or user doesn't exist
+
+        '409':
+          description: User already verified
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: The error message (required)
+                    example: user already verified
+
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: A general error message (required)
+                    example: Houston, we have a problem
+          
+  /api/auth/login:
+    post: 
+      summary: Validate logging in of user
+      security:
+        - AuthToken: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "components.yaml#/SignInRequest"
+      responses: 
+        '200':
+          description: Successful user login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response (required)
+                  token:
+                    type: string
+                    description: The authentication token (required)
+                    example: dfghjkloiuytredfghjiuytredfcvbjkiouytr
+
+        '400':
+          description: Invalid email or Password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: The error message (required)
+                    example: invalid email or Password
+
+        '403':
+          description: Please verify your email
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: The error message (required)
+                    example: please verify your email
+
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: A general error message (required)
+                    example: Houston, we have a problem
+        
+  /api/auth/logout:
+    get:
+      summary: User logout
+      description: Send an expired cookie to invalidate the user's session.
+      security:
+        - AuthToken: []
+      responses:
+        '200':
+          description: You have been logged out
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Logout message (required)
+                    example: you have been logged out
+
+  /api/users/me:
+    get:
+      summary: Get User Data
+      description: Retrieve the currently logged-in user’s information.
+      security:
+        - AuthToken: []
+      parameters:
+        - name: Cookie
+          in: header
+          required: true
+          schema:
+            type: string
+            example: token=<token_value>
+      responses:
+        '200':
+          description: User data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: "components.yaml#/UserDataResponse"
+        '401':
+          description: Unauthorized - User not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: You are not logged in
+
+  /api/users/me/change-password:
+    patch:
+      summary: Change Password
+      description: Update the logged in user's password.
+      security:
+        - AuthToken: []
+      
+      parameters:
+        - name: Cookie
+          in: header
+          required: true
+          schema:
+            type: string
+            example: token=<token_value>
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+            example: Bearer <jwt>
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "components.yaml#/UpdatePasswordData"
+      responses:
+        '200':
+          description: Password change successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Success message (required)
+                    example: Password change successful
+        '400':
+          description: Bad Request - Passwords do not match
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Passwords do not match
+        '401':
+          description: Unauthorized - User not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: You are not logged in
+        '500':
+          description: Internal Server Error - Failed to update password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Failed to update password
+
+  /api/users/me/redeem:
+    post:
+      summary: Points Redemption
+      description: Redeem Points earned for a product/service.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "components.yaml#/ProductRequestData"
+      responses:
+        '200':
+          description: Redemption successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Success message (required)
+                    example: Redemption successful
+                  redeemed_product:
+                    type: string
+                    description: The name of the redeemed product (required)
+                    example: Airtime 20 KES
+                  redeemed_points:
+                    type: number
+                    description: The number of redeemed points (required)
+                    example: 500
+                  balance:
+                    type: object
+                    properties:
+                      redeemable_points:
+                        type: number
+                        description: The user's balance of redeemable points (required)
+                        example: 0
+        '401':
+          description: Unauthorized - User not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: You are not logged in
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Product not found
+        '500':
+          description: Things have gone really bad
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Things have gone really bad
+
+  /api/users/me/transaction-history:
+    get:
+      summary: List all Transactions
+      description: Get a list of a logged in user's transaction data.
+      parameters:
+        - name: Cookie
+          in: header
+          required: true
+          schema:
+            type: string
+            example: token=<token_value>
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+            example: Bearer <jwt>
+      responses:
+        '200':
+          description: Transaction History Retrieval successful!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Success message (required)
+                    example: Transaction History Retrieval successful!
+                  data:
+                    type: object
+                    properties:
+                      transactions:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/TransactionHistory'
+        '401':
+          description: Unauthorized - User not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: You are not logged in
+        '404':
+          description: Transactions not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Transactions not found
+        '500':
+          description: Failed to retrieve transactions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Failed to retrieve transactions
+
+  /api/auth/forgot-password:
+    post:
+      summary: Forgot password
+      description: Send password reset email to the requesting user email.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The user's email address (required)
+                  example: user@example.com
+      responses:
+        '200':
+          description: Email sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Success message (required)
+                    example: We sent an email with a reset password code to user-email@example.com
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: error-msg
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: User not found
+        '500':
+          description: Failed to retrieve user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Failed to retrieve user
+
+  /api/auth/reset-password/{resetToken}:
+    parameters:
+    - name: resetToken
+      in: path
+      required: true
+      schema:
+        type: string
+    patch:
+      summary: Reset password
+      description: Reset user's password.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "components.yaml#/ResetPasswordData"
+      responses:
+        '200':
+          description: Password reset successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Success message (required)
+                    example: Password reset successful
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: error-msg (required)
+
+  /api/users/products:
+    get:
+      summary: Get All Products
+      description: Retrieves a list of all available products.
+      parameters:
+        - name: Cookie
+          in: header
+          required: true
+          schema:
+            type: string
+            example: token=<token_value>
+        - name: Authorization
+          in: header
+          required: true
+          schema:
+            type: string
+            example: Bearer <jwt>
+      responses:
+        '200':
+          description: Products Retrieval successful!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Success message (required)
+                    example: Products Retrieval successful!
+                  data:
+                    type: object
+                    properties:
+                      products:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/AvailableProducts'
+        '401':
+          description: Unauthorized - User not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: You are not logged in
+        '404':
+          description: Products not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Products not found
+        '500':
+          description: Failed to retrieve products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Failed to retrieve products
+
+  /api/auth/admin/login:
+    post:
+      summary: Admin login
+      description: Authenticates an admin user and returns an access token.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "components.yaml#/LoginRequest"
+      responses:
+        '200':
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response (required)
+                  token:
+                    type: string
+                    description: Access token for the admin user (required)
+                    example: dfghjkloiuytredfghjiuytredfcvbjkiouytr
+        '400':
+          description: Invalid Password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Invalid Password
+        '500':
+          description: Things have gone really bad
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Things have gone really bad
+
+  /api/admin/logout:
+    get:
+      summary: Admin logout
+      description: Send an expired cookie to the browser or client to invalidate the admin's session.
+      responses:
+        '200':
+          description: Logged out successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Success message (required)
+                    example: You have been logged out
+
+  /api/admin/product:
+    post:
+      summary: Create Product
+      description: Creates a new product.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "components.yaml#/ProductData"
+      responses:
+        '201':
+          description: Product added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Success message (required)
+                    example: Product added successfully
+        '401':
+          description: Unauthorized - Admin not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: You are not logged in
+        '500':
+          description: Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Things have gone really bad
+
+  /api/admin/product/{id}:
+    put:
+      summary: Update Product
+      description: Updates a product by its id.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductData'
+      responses:
+        '200':
+          description: Product updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - success
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Success message (required)
+                    example: Product updated successfully
+        '400':
+          description: Bad Request - Failed to retrieve product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Failed to retrieve product
+        '401':
+          description: Unauthorized - Admin not logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: You are not logged in
+        '404':
+          description: Product not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - fail
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Product not found
+        '500':
+          description: Server Error - Failed to update product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                    description: The status of the response (required)
+                  message:
+                    type: string
+                    description: Error message (required)
+                    example: Failed to update product
+  
+# Data Structures
+components:
+  schemas:  
+    SignInRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: The user's email address (required)
+          example: testuser@example.com
+        password:
+          type: string
+          description: The user's password (required)
+          example: password123
+
+    CreateAccountRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: The user's username (required)
+          example: TestUser
+        firstname:
+          type: string
+          description: The user's first name (required)
+          example: Test
+        lastname:
+          type: string
+          description: The user's last name (required)
+          example: User
+        gender:
+          type: string
+          description: The user's gender (required)
+          example: yourGender
+        email:
+          type: string
+          format: email
+          description: The user's email address (required)
+          example: testuser@example.com
+        password:
+          type: string
+          description: The user's password (required)
+          example: examplePasword232
+        city:
+          type: string
+          description: The user's city (required)
+          example: Nairobi
+        phone_number:
+          type: string
+          description: The user's phone number (required)
+          example: +25412345789
+
+    UserDataResponse:
+      type: object
+      properties:
+        user:
+          type: object
+          properties:
+            username:
+              type: string
+              description: The user's username (required)
+              example: TestUser
+            firstname:
+              type: string
+              description: The user's first name (required)
+              example: Test
+            lastname:
+              type: string
+              description: The user's last name (required)
+              example: User
+            email:
+              type: string
+              format: email
+              description: The user's email address (required)
+              example: testuser@example.com
+            phone_number:
+              type: string
+              description: The user's phone number (required)
+              example: +25412345789
+            redeemable_points:
+              type: number
+              description: The user's total points (required)
+              example: 250
+            city:
+              type: string
+              description: The user's city (required)
+              example: Nairobi
+            card_number:
+              type: string
+              description: The user's virtual card number (required)
+              example: 0123456789012
+
+    UpdatePasswordData:
+      type: object
+      properties:
+        new_password:
+          type: string
+          description: The new password (required)
+          example: yournewpassword
+        confirm_password:
+          type: string
+          description: Confirm the new password (required)
+          example: yournewpassword
+
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          description: A human readable error message
+          type: string
+
+    AvailableProducts:
+      type: object
+      properties:
+        product_name:
+          type: string
+          description: The product's name (required)
+          example: Airtime 10 KES
+        product_description:
+          type: string
+          description: The product's description (required)
+          example: By Lexcom-Hellopay
+        product_price:
+          type: number
+          description: The product's price (required)
+          example: 250
+
+    ProductRequestData:
+      type: object
+      properties:
+        product_name:
+          type: string
+          description: The product's name (required)
+          example: Airtime 20 KES
+        product_quantity:
+          type: number
+          description: The quantity of the product (required)
+          example: 1
+
+    TransactionHistory:
+      type: object
+      properties:
+        points:
+          type: number
+          description: The number of points for the transaction (required)
+          example: 150
+        state:
+          type: string
+          description: The state of the transaction (required)
+          example: EARN
+        description:
+          type: string
+          description: The description of the transaction (required)
+          example: COMPLETE INFO SITE BONUS
+        date:
+          type: string
+          description: The date of the transaction in ISO 8601 format (required)
+          example: "2023-06-03"
+        time:
+          type: string
+          description: The time of the transaction in ISO 8601 format (required)
+          example: "20:39:58"
+
+    ResetPasswordData:
+      type: object
+      properties:
+        new_password:
+          type: string
+          description: The new password (required)
+        confirm_password:
+          type: string
+          description: Confirm new password (required)
+
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          description: The admin's username (required)
+          example: YourUsername23
+        password:
+          type: string
+          description: The admin's password (required)
+          example: your-password
+
+    ProductData:
+      type: object
+      properties:
+        product_name:
+          type: string
+          description: The product's name (required)
+          example: AIRTIME 10 KES
+        product_description:
+          type: string
+          description: The product's description (required)
+          example: By Lexcom-Hellopay
+        product_price:
+          type: number
+          description: The product's price (required)
+          example: 250
+        quantity:
+          type: number
+          description: The quantity of the product (required)
+          example: 10
+          
+    AllProducts:
+      type: object
+      properties:
+        ID:
+          type: number
+          description: The ID of the product (required)
+          example: 1
+        CreatedAt:
+          type: string
+          format: date-time
+          description: The date and time of creation (required)
+          example: "2023-06-05T10:00:25.020265+03:00"
+        UpdatedAt:
+          type: string
+          format: date-time
+          description: The date and time of last update (required)
+          example: "2023-06-05T14:28:57.824939+03:00"
+        DeletedAt:
+          type: string
+          format: date-time
+          description: The date and time of deletion (required)
+          example: "2023-06-05T18:22:07.824939+03:00"
+        product_name:
+          type: string
+          description: The product's name (required)
+          example: Airtime 10 KES
+        product_description:
+          type: string
+          description: The product's description (required)
+          example: By Lexcom-Hellopay
+        product_price:
+          type: number
+          description: The product's price (required)
+          example: 250
+        quantity:
+          type: number
+          description: The quantity of the product (required)
+          example: 7
+
+    
+  securitySchemes:
+    AuthToken:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+
+# Security Options (Authentication & Authorization)
+security:
+  - AuthToken: []
+  - ApiKey: []
